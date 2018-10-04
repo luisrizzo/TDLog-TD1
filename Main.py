@@ -1,157 +1,181 @@
 import string
+import os
 
 def PrintGrid(grid):
 	for i in range(len(grid)):
 		line=""
 		for j in range(len(grid[0])):
-			line+=grid[j][i]
+			line+=grid[i][j]
 		print(line)
 
+#verify if the input of the mirror is correct
 def checkmirror (mirror):
 	while True :
-		if mirror == "/": return
-		elif mirror == "\\": return
+		if mirror == "/": return mirror
+		elif mirror == "\\": return mirror
 		else :
-			print("I've not recognised the mirror type")
-			mirror = input("To add mirror type select / or \\")
+			print("I've not recognised the mirror type.")
+			mirror = input("To add mirror select / or \\:")
 
+#verify if the mirror is inside the grid
 def checkcoord(coord,max_x,max_y):
 	coord_m = (coord.strip()).split(",")
+	coord_m [0]= int(coord_m[0])
+	coord_m [1]= int(coord_m[1])
+	#print(coord_m)
 	while True:
-		if coord_m(0) > 1 and coord_m(0) < max_x and coord_m(1) > 1 and coord_m(1) < max_y
+		if coord_m[0] > 0 and coord_m[0] < max_x - 1 and coord_m[1] > 0 and coord_m[1] < max_y - 1:
 			return coord_m
 		else:
-			coord = input("Add coordinates: x,y")
+			print("Mirror outside of range.")
+			coord = input("Add new coordinates as i,j:")
+			coord_m = (coord.strip()).split(",")
+			coord_m [0]= int(coord_m[0])
+			coord_m [1]= int(coord_m[1])
 
 class ray():
 
-	def __init__(x0,y0,dir0)
-		self._x = x0
-		self._y = y0
-		self._dir = dir0
+	def __init__(self,x0,y0,direction0):
+		self.x = x0
+		self.y = y0
+		self.direction = direction0
 
-	def translate (self,dir)
-		printray(dir)
-		self.x += dir[0]
-		self.y += dir[1]
+	#change the position of the ray
+	def translate (self):
+		self.printray()
+		self.x += self.direction[0]
+		self.y += self.direction[1]
 
-	def printray(dir)
-		if dir == (0,1) :
-			return "^"
-		elif dir == (0,-1) :
-			return "V"
-		elif dir == (1,0) :
-			return ">"
-		elif dir == (-1,0) :
+	#define the symbol of the ray
+	def printray(self):
+		if self.direction == (0,-1) :
 			return "<"
-		else
+		elif self.direction == (0,1) :
+			return ">"
+		elif self.direction == (1,0) :
+			return "v"
+		elif self.direction == (-1,0) :
+			return "^"
+		else :
 			return ""
 
-	def reflex (m, dir)
-		if m = "/" :
-			if dir == (1,0) :
-				dir = (0,-1)
-			elif dir == (0,1) :
-				dir = (-1,0)
-			elif dir == (0,-1) :
-				dir = (1,0)
-			elif dir == (-1,0) :
-				dir = (0,1)
-			else
-				print ("Ray direction problem")
-		elif m = "\\" :
-			if dir == (1,0) :
-				dir = (0,1)
-			elif dir == (0,1) :
-				dir = (1,0)
-			elif dir == (0,-1) :
-				dir = (-1,0)
-			elif dir == (-1,0) :
-				dir = (0,-1)
-			else
-				print ("Ray direction problem")
+	#change the direction of the ray when hiting a mirror
+	def reflex (self, m):
+		if m == "/" :
+			if self.direction == (-1,0) :
+				self.direction = (0,1)
+			elif self.direction == (0,1) :
+				self.direction = (-1,0)
+			elif self.direction == (0,-1) :
+				self.direction = (1,0)
+			elif self.direction == (1,0) :
+				self.direction = (0,-1)
+		elif m == "\\" :
+			if self.direction == (1,0) :
+				self.direction = (0,1)
+			elif self.direction == (0,1) :
+				self.direction = (1,0)
+			elif self.direction == (0,-1) :
+				self.direction = (-1,0)
+			elif self.direction == (-1,0) :
+				self.direction = (0,-1)
 
-#create an empty grid
-width=int(input("What's the width of the grid?"))+2
-height=int(input("What's the height of the grid?"))+2
-grid=[]
-for i in range(height):
-	row=[]
-	for j in range(width):
-		row.append(" ")
-	grid.append(row)
+def main():
+	#create an empty grid
+	width=int(input("What's the width of the grid? "))+2
+	height=int(input("What's the height of the grid? "))+2
+	while width < 4 or height < 4 or width >28 or height > 28:
+		print("Problem with inputs given.")
+		width=int(input("What's the width of the grid? "))+2
+		height=int(input("What's the height of the grid? "))+2
+	grid=[]
+	for i in range(height):
+		row=[]
+		for j in range(width):
+			row.append(" ")
+		grid.append(row)
 
-#add letters to the first and last rows and columns
-letters=list(string.ascii_uppercase)
-for i in range(height-2):
-	grid[0][i+1]=letters[i]
-	grid[height-1][i+1]=letters[i]
-for j in range(width-2):
-	grid[j+1][0]=letters[j]
-	grid[j+1][width-1]=letters[j]
+	#add letters to the first and last rows and columns
+	letters=list(string.ascii_uppercase)
+	for i in range(width-2):
+		grid[0][i+1]=letters[i]
+		grid[height-1][i+1]=letters[i]
+	for j in range(height-2):
+		grid[j+1][0]=letters[j]
+		grid[j+1][width-1]=letters[j]
 
-add_mirrors = True
-keep_adding = input("Do you want to add a mirror? (y/n)")
-while add_mirrors :
-	if keep_adding == "y":
-		coord = input("Add coordinates: x,y")
-		m = input("Add mirror type: / or \\")
+	#add mirrors to the grid
+	add_mirrors = True
+	keep_adding = input("Do you want to add a mirror? (y/n) ")
+	while add_mirrors :
+		if keep_adding == "y":
+			coord = input("Add coordinates i,j: ")
+			m = input("Add mirror type (/ or \\): ")
 
-		checkmirror (m)
-		mirror_position = checkcoord (coord, width, height)
+			m = checkmirror (m)
+			mirror_position = checkcoord(coord, height, width)
 
-		grid(mirror_position(0),mirror_position(1))
+			grid[mirror_position[0]][mirror_position[1]]=m
 
+			PrintGrid(grid)
+			keep_adding = input("Do you want to add another mirror? (y/n) ")
+		elif keep_adding == "n":
+			add_mirrors = False
+		else :
+			print("I did not understand your answer.")
+			keep_adding = input("Do you want to add another mirror? (y/n) ")
+	print("Final grid is :")
+	PrintGrid(grid)
+
+	#Initial position of the ray
+	question_ray_letter = input("Entry point: type the uppercase letter of the ray: ")
+	question_ray_direction = input("Entry point: type the direction of the ray: ")
+	match = 26
+	while match == 26:
+		for i in range(25):
+			if question_ray_letter==letters[i]:
+				match=i
+				break
+		if match == 26:
+			print("I did not understand your ray entrypoint.")
+			question_ray_letter = input("Entry point: type the uppercase letter of the ray: ")
+	while question_ray_direction != "<" and question_ray_direction != ">" and question_ray_direction != "v" and question_ray_direction != "^":
+		print("I did not understand your ray direction.")
+		question_ray_direction = input("Entry point: type the direction of the ray: ")
+
+	if question_ray_direction=="<":
+		direction = (0,-1)
+		x=width-2
+		y=match+1
+	elif  question_ray_direction==">":
+		direction = (0,1)
+		x=1
+		y=match+1
+	elif  question_ray_direction=="^":
+		direction = (-1,0)
+		x=match+1
+		y=height-2
+	elif  question_ray_direction=="v":
+		direction = (1,0)
+		x=match+1
+		y=1
+	else:
+		print ("Ray direction problem.")
+	r=ray(y,x,direction)
+
+	#Ray's movement
+	inside = True
+	while inside :
+		if grid[r.x][r.y] == "/" or grid[r.x][r.y] == "\\" :
+			r.reflex(grid[r.x][r.y])
+			r.translate()
+		else :
+			grid[r.x][r.y] = r.printray()
+			r.translate()
+		os.system('cls' if os.name == 'nt' else "printf '\033c'")
 		PrintGrid(grid)
-		keep_adding = input("Do you want to add another mirror? (y/n)")
-	elif keep_adding == "n":
-		add_mirrors = False
-	else :
-		print("I did not understand your answer.")
-		keep_adding = input("Do you want to add another mirror? (y/n)")
-Prind ("Final grid is :")
-PrintGrid(grid)
+		if r.x > height-2 or r.x < 1 or r.y > width-2 or r.y < 1 :
+			inside = False
+	print ("Game over, ray left out the system! Point of exit is ",grid[r.x][r.y]," with a direction ",r.printray())
 
-#Initial position of the ray
-question_ray_letter = input("Entry point: type the uppercase letter of the ray:")
-question_ray_dir = input("Entry point: type the direction of the ray:")
-for i in range(30):
-	if question_ray_letter==letters[i]:
-		match=i
-		break
-#Write check routine to see if letter is a valid entry or not
-
-if question_ray_dir=="^":
-	dir = (0,-1)
-	x=match
-	y=height-2
-elif  question_ray_dir=="V":
-	dir = (0,1)
-	x=match
-	y=1
-elif  question_ray_dir==">":
-	dir = (1,0)
-	x=1
-	y=match
-elif  question_ray_dir=="<":
-	dir = (-1,0)
-	x=width-2
-	y=match
-else:
-	print ("Ray direction problem")
-
-r=ray(x,y,dir)
-
-#Ray's movement
-inside = True
-while inside :
-	if grid[r.x][r.y] == "/" or grid[r.x][r.y] == "\\" :
-		r.reflex(grid[r.x][r.y],dir)
-		r.translate()
-	else :
-		grid[r.x][r.y] = r.printray()
-		r.translate()
-	PrintGrid()
-	if r.x > width-2 or r.x < 1 or r.y > height-2 or r.y < 1 :
-		inside = False
-Print ("Game over, ray left out the system! Coordinates of exit are" & r(x,y))
+main()
