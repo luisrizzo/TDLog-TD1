@@ -1,3 +1,8 @@
+#Ecole Nationale des Ponts et Chaussées
+#Techniques de Développement Logiciel
+#TP 1 
+#Fait par Luis Augusto YOKOTA RIZZO et Daniel Toshihiro OKANE
+
 import string
 import os
 
