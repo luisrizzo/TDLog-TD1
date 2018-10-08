@@ -6,6 +6,8 @@
 #Nous avons choisi de prendre le code corrige du TP1 de Xavier selon les possibilites donnees par M Thierry Martinez
 
 import string
+import random
+import sys
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)), string.ascii_uppercase))
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
@@ -110,6 +112,46 @@ class SquareMirror :
 		dy = -particle.dy
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
 
+#class with transporter
+#modeled to be the same as mirrors apart from receiving also the transporters list as a reference
+class Transporter :
+	def __init__(self, transporters):
+		self.transporters_list = transporters
+		pass
+
+	def char_representation(self):
+		return "o"
+
+	def step(self,particle):
+		dx = particle.dx
+		dy = particle.dy
+		newx, newy = self.transporters_list.actionteleport
+		return Particle (newX + dx, newY + dy, dx, dy)
+
+#class with list of transporters
+#X coordinates and Y coordinates stored in different lists
+#lists are called in objects of "transporter" class
+class teleporting :
+	def __init__(self):
+		self.coordx = []
+		self.coordy = []
+		pass
+
+	def newtransp(self,addx, addy):
+		self.coordx.append(addx)
+		self.coordy.append(addy)
+
+	def actionteleport(self,oldx, oldy):
+		if len(self.coordx) > 1:
+	   		i=random.randint(0,len(self.coordx)-1)
+	   		while oldx == self.coordx(i) and oldy == self.coordy(i):
+	   			i=random.randint(0,len(self.coordx)-1)
+	   		newx = self.coordx[i]
+	   		newy = self.coordy[i]
+			return newx + newy
+		else:
+			sys.exit(0)
+
 class Box:
 	def __init__(self, width, height, elements):
 		assert (width >= 3) and (width <= 26), "invalid width"
@@ -117,8 +159,10 @@ class Box:
 		self._width = width
 		self._height = height
 		self._grid = dict()
+		self.printgrid = dict()
 		for (x, y, element) in elements:
 			self._grid[x, y] = element
+			self.printgrid[x,y] = element.char_representation()
 
 	@property
 	def width(self):
@@ -182,28 +226,39 @@ class Box:
 	def simulate(self, description):
 		particle = self._particle_of_string(description)
 		while self._is_particle_in_box(particle):
+			print_grid(particle.x, particle.y)
 			particle = self[particle.x, particle.y].step(particle)
-		return self._string_of_particle(particle)
+		return self._string_of_particle(particle) + self.printgrid
+
+	def print_grid()
+		#Update values of printgrid
+		#Printgrid as a virtual keeper of the route and is used to print the final path
+		self.printgrid[x,y] = "."
 
 def build_interactively():
 	def input_dimension(text):
 		res = input(text)
 		assert res.isdigit(), "invalid dimension"
 		return int(res)
+
 	width = input_dimension("width? ")
 	height = input_dimension("height? ")
 	mirrors = []
-	mirror_desc = input("New object? ")
+	#changer le format de mirror desc qui ne marchait pas
+	mirror_desc = (input("New object? x, y, kind (possibilities / or \\ or | or - or # or o)").strip()).split(",")
+	transporters = Teleporting()
 	while mirror_desc:
 		assert len(mirror_desc) == 3, "invalid mirror description"
-		x, y, kind = mirror_desc
+		x, y, kind = mirror_desc [0], mirror_desc[1], mirror_desc[2]
 		assert (x in string.ascii_uppercase)
 		if kind == "/": mirror_obj = ForwardSlashMirror()
 		elif kind == "\\": mirror_obj = BackSlashMirror()
 		elif kind == "|": mirror_obj = VerticalMirror()
 		elif kind == "-": mirror_obj = HorizontalMirror()
 		elif kind == "#": mirror_obj = SquareMirror()
-		elif kind == "o": mirror_obj = Transporter()
+		elif kind == "o":
+			transporters.newtransp(x,y)
+			mirror_obj = Transporter(transporters)
 		else: assert False, "invalid mirror kind"
 		mirrors.append((letter_to_int[x], letter_to_int[y], mirror_obj))
 		mirror_desc = input("mirror? ")
