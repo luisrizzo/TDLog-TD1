@@ -2,7 +2,10 @@
 #Techniques de Développement Logiciel
 #TP 1 
 #Fait par Luis Augusto YOKOTA RIZZO et Daniel Toshihiro OKANE
+<<<<<<< HEAD
 #test
+=======
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
 
 import string
 import os
@@ -17,11 +20,19 @@ def PrintGrid(grid):
 #verify if the input of the mirror is correct
 def checkmirror (mirror):
 	while True :
+<<<<<<< HEAD
 		if mirror == "/": return mirror
 		elif mirror == "\\": return mirror
 		else :
 			print("I've not recognised the mirror type.")
 			mirror = input("To add mirror select / or \\:")
+=======
+		if mirror == "/" or mirror == "\\" or mirror == "|" or mirror == "-" or mmirror == "#" : 
+			return mirror
+		else :
+			print("I've not recognised the mirror type.")
+			mirror = input("To add mirror select / or \\ or | or - or #:")
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
 
 #verify if the mirror is inside the grid
 def checkcoord(coord,max_x,max_y):
@@ -85,7 +96,37 @@ class ray():
 				self.direction = (-1,0)
 			elif self.direction == (-1,0) :
 				self.direction = (0,-1)
+<<<<<<< HEAD
 
+=======
+		elif m == "|":
+			if self.direction == (1,0) :
+				self.direction = (1,0)
+			elif self.direction == (0,1) :
+				self.direction = (0,-1)
+			elif self.direction == (0,-1) :
+				self.direction = (0,1)
+			elif self.direction == (-1,0) :
+				self.direction = (-1,0)
+		elif m == "-":
+			if self.direction == (1,0) :
+				self.direction = (-1,0)
+			elif self.direction == (0,1) :
+				self.direction = (0,1)
+			elif self.direction == (0,-1) :
+				self.direction = (0,-1)
+			elif self.direction == (-1,0) :
+				self.direction = (0,-1)
+		elif m == "#":
+			if self.direction == (1,0) :
+				self.direction = (-1,0)
+			elif self.direction == (0,1) :
+				self.direction = (0,-1)
+			elif self.direction == (0,-1) :
+				self.direction = (0,1)
+			elif self.direction == (-1,0) :
+				self.direction = (1,0)
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
 def main():
 	#create an empty grid
 	width=int(input("What's the width of the grid? "))+2
@@ -116,7 +157,11 @@ def main():
 	while add_mirrors :
 		if keep_adding == "y":
 			coord = input("Add coordinates i,j: ")
+<<<<<<< HEAD
 			m = input("Add mirror type (/ or \\): ")
+=======
+			m = input("To add mirror select / or \\ or | or - or # : ")
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
 
 			m = checkmirror (m)
 			mirror_position = checkcoord(coord, height, width)
@@ -172,7 +217,11 @@ def main():
 	#Ray's movement
 	inside = True
 	while inside :
+<<<<<<< HEAD
 		if grid[r.x][r.y] == "/" or grid[r.x][r.y] == "\\" :
+=======
+		if grid[r.x][r.y] == "/" or grid[r.x][r.y] == "\\" or grid[r.x][r.y] == "|" or grid[r.x][r.y] == "-" or grid[r.x][r.y] =="#":
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
 			r.reflex(grid[r.x][r.y])
 			r.translate()
 		else :
@@ -184,4 +233,8 @@ def main():
 			inside = False
 	print ("Game over, ray left out the system! Point of exit is ",grid[r.x][r.y]," with a direction ",r.printray())
 
+<<<<<<< HEAD
 main()
+=======
+main()
+>>>>>>> cbb5df26082ed412ea31856a6e691ac5911498cb
