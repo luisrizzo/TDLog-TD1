@@ -44,8 +44,8 @@ class ForwardSlashMirror:
         self.trace=False
     @property
     def char_representation(self):
-        if self.trace:'p'
-        else:return '/'
+        if self.trace: return'.'
+        else: return '/'
     def step(self, particle):
         self.trace=True
         dx = -particle.dy
@@ -54,14 +54,86 @@ class ForwardSlashMirror:
 
 class BackSlashMirror:
     def __init__(self):
-        pass
+        self.trace=False
     @property
     def char_representation(self):
-        return '\\'
+        if self.trace: return'.'
+        else: return '\\'
     def step(self, particle):
+        self.trace=True
         dx = particle.dy
         dy = particle.dx
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
+
+class VerticalMirror :
+    def __init__(self):
+        self.trace=False
+
+    @property
+    def char_representation(self):
+        if self.trace: return'.'
+        else: return "|"
+
+    def step(self, particle):
+        self.trace=True
+        dx = -particle.dx
+        dy = particle.dy
+        return Particle(particle.x + dx, particle.y + dy, dx, dy)
+
+class HorizontalMirror :
+    def __init__(self):
+        self.trace=False
+
+    @property
+    def char_representation(self):
+        if self.trace: return'.'
+        else: return "-"
+
+    def step(self, particle):
+        self.trace=True
+        dx = particle.dx
+        dy = -particle.dy
+        return Particle(particle.x + dx, particle.y + dy, dx, dy)
+
+class SquareMirror :
+    def __init__(self):
+        self.trace=False
+
+    @property
+    def char_representation(self):
+        if self.trace: return'.'
+        else: return "#"
+
+    def step(self, particle):
+        self.trace=True
+        dx = -particle.dx
+        dy = -particle.dy
+        return Particle(particle.x + dx, particle.y + dy, dx, dy)
+
+class Transporter :
+    def __init__(self, transporters):
+        self.transporters_list = transporters
+        self.trace=False
+    def char_representation(self):
+        if self.trace: return'.'
+        else: return 'o'
+    def actionteleport(self,oldx, oldy):
+        if len(self.transporters_list) > 1:
+            i=random.randint(0,len(self.transporters_list)-1)
+            while oldx == self.transporters_list[i][0] and oldy == self.transporters_list[i][1]:
+                i=random.randint(0,len(self.transporters_list)-1)
+            newx = self.transporters_list[i][0]
+            newy = self.transporters_list[i][1]
+            return (newx , newy)
+        else:
+            sys.exit(0)
+    def step(self,particle):
+        self.trace = True
+        print(self.transporters_list)
+        dx = particle.dx
+        dy = particle.dy
+        newx, newy = self.transporters_list.actionteleport(particle.x,particle.y)
+        return Particle (newX + dx, newY + dy, dx, dy)
 
 class Box:
     def __init__(self, width, height, elements):
@@ -70,6 +142,9 @@ class Box:
         self._width = width
         self._height = height
         self._grid = dict()
+        for x in range (width):
+            for y in range (height):
+                self._grid[x,y] = Aether()
         for (x, y, element) in elements:
             self._grid[x, y] = element
     @property
@@ -82,10 +157,7 @@ class Box:
         x, y = key
         assert (x >= 0) and (x < self._width)
         assert (y >= 0) and (y < self._height)
-        if key in self._grid:
-            return self._grid[key]
-        else:
-            return Aether()
+        return self._grid[key]
     def __str__(self):
         rule = " " + string.ascii_uppercase[0:self._width] + " "
         lines = []
@@ -140,6 +212,7 @@ def build_interactively():
     width = input_dimension("width? ")
     height = input_dimension("height? ")
     mirrors = []
+    transporters = []
     mirror_desc = input("mirror? ")
     while mirror_desc:
         assert len(mirror_desc) == 3, "invalid mirror description"
@@ -147,6 +220,12 @@ def build_interactively():
         assert (x in string.ascii_uppercase)
         if kind == '/': mirror_obj = ForwardSlashMirror()
         elif kind == '\\': mirror_obj = BackSlashMirror()
+        elif kind == "|": mirror_obj = VerticalMirror()
+        elif kind == "-": mirror_obj = HorizontalMirror()
+        elif kind == "#": mirror_obj = SquareMirror()
+        elif kind == "o":
+            transporters.append((letter_to_int[x], letter_to_int[y]))
+            mirror_obj = Transporter(transporters)
         else: assert False, "invalid mirror kind"
         mirrors.append((letter_to_int[x], letter_to_int[y], mirror_obj))
         mirror_desc = input("mirror? ")
