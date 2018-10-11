@@ -213,18 +213,18 @@ class Box:
         return self._string_of_particle(particle)
 
 def build_interactively():
-    def input_dimension():
-	    control_input = True
-	    while control_input :
-	    	try :
-			    width = int(input("width? "))
-			    height = int(input_dimension("height? "))
+	def input_dimension():
+		control_input = True
+		while control_input :
+			try :
+				width = int(input("width? "))
+				height = int(input_dimension("height? "))
 				if (width < 3) or (width > 26):
 					print("invalid width")
-	        	if (height < 3) or (height > 26):
-	        		print("invalid height")
-	        	if (width >= 3) and (width <= 26) and (height >= 3) and (height <= 26):
-	        		control_input = False
+				if (height < 3) or (height > 26):
+					print("invalid height")
+				if (width >= 3) and (width <= 26) and (height >= 3) and (height <= 26):
+					control_input = False
 			except ValueError:
 				print ("Oops. One of the inputs was not a number")
 		return (widht,height)
@@ -237,30 +237,30 @@ def build_interactively():
 				letter_to_int[x_obj]
 				letter_to_int[y_obj]
 				list_of_objects[kind_obj]
-            	break
-            except ValueError:
-            	print("Invalid input. Not the right amount of inputs")
-        	except KeyError :
-        		print("One of the inputs was invalid. Try again")
+				break
+			except ValueError:
+				print("Invalid input. Not the right amount of inputs")
+			except KeyError :
+				print("One of the inputs was invalid. Try again")
 		return obj_obj
 
 	widht, height = input_dimension()
-    objects_list = []
-    transporters = []
-    object_desc = input_object(possible_objects)
-    while object_desc:
-        x, y, kind = object_desc
-        if kind == '/': object_obj = ForwardSlashMirror()
-        elif kind == '\\': object_obj = BackSlashMirror()
-        elif kind == "|": object_obj = VerticalMirror()
-        elif kind == "-": object_obj = HorizontalMirror()
-        elif kind == "#": object_obj = SquareMirror()
-        elif kind == "o":
-            transporters.append((letter_to_int[x], letter_to_int[y]))
-            object_obj = Transporter(transporters)
-        objects_list.append((letter_to_int[x], letter_to_int[y], object_obj))
-        object_desc = input_object(possible_objects)
-    return Box(width, height, objects_list)
+	objects_list = []
+	transporters = []
+	object_desc = input_object(possible_objects)
+	while object_desc:
+		x, y, kind = object_desc
+		if kind == '/': object_obj = ForwardSlashMirror()
+		elif kind == '\\': object_obj = BackSlashMirror()
+		elif kind == "|": object_obj = VerticalMirror()
+		elif kind == "-": object_obj = HorizontalMirror()
+		elif kind == "#": object_obj = SquareMirror()
+		elif kind == "o":
+			transporters.append((letter_to_int[x], letter_to_int[y]))
+			object_obj = Transporter(transporters)
+		objects_list.append((letter_to_int[x], letter_to_int[y], object_obj))
+		object_desc = input_object(possible_objects)
+	return Box(width, height, objects_list)
 
 box = build_interactively()
 print(box)
