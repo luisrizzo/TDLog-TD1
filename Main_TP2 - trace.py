@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
 import string
+import random
+import sys
 
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
                               string.ascii_uppercase))
@@ -41,71 +43,75 @@ class Aether:
 
 class ForwardSlashMirror:
     def __init__(self):
-        self.trace=False
+        #self.trace=False
+        pass
     @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return '/'
+        #if self.trace: return'.'
+        #else: return '/'
+        return '/'
     def step(self, particle):
-        self.trace=True
+        #self.trace=True
         dx = -particle.dy
         dy = -particle.dx
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
 
 class BackSlashMirror:
     def __init__(self):
-        self.trace=False
+        #self.trace=False
+        pass
     @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return '\\'
+        #if self.trace: return'.'
+        #else: return '\\'
+        return '\\'
     def step(self, particle):
-        self.trace=True
+        #self.trace=True
         dx = particle.dy
         dy = particle.dx
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
 
 class VerticalMirror :
     def __init__(self):
-        self.trace=False
-
+        #self.trace=False
+        pass
     @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return "|"
-
+        #if self.trace: return'.'
+        #else: return "|"
+        return "|"
     def step(self, particle):
-        self.trace=True
+        #self.trace=True
         dx = -particle.dx
         dy = particle.dy
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
 
 class HorizontalMirror :
     def __init__(self):
-        self.trace=False
-
+        #self.trace=False
+        pass
     @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return "-"
-
+        #if self.trace: return'.'
+        #else: return "-"
+        return "-"
     def step(self, particle):
-        self.trace=True
+        #self.trace=True
         dx = particle.dx
         dy = -particle.dy
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
 
 class SquareMirror :
     def __init__(self):
-        self.trace=False
-
+        #self.trace=False
+        pass
     @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return "#"
-
+        #if self.trace: return'.'
+        #else: return "#"
+        return "#"
     def step(self, particle):
-        self.trace=True
+        #self.trace=True
         dx = -particle.dx
         dy = -particle.dy
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
@@ -113,10 +119,12 @@ class SquareMirror :
 class Transporter :
     def __init__(self, transporters):
         self.transporters_list = transporters
-        self.trace=False
+        #self.trace=False
+    @property
     def char_representation(self):
-        if self.trace: return'.'
-        else: return 'o'
+        #if self.trace: return'.'
+        #else: return 'o'
+        return 'o'
     def actionteleport(self,oldx, oldy):
         if len(self.transporters_list) > 1:
             i=random.randint(0,len(self.transporters_list)-1)
@@ -128,12 +136,11 @@ class Transporter :
         else:
             sys.exit(0)
     def step(self,particle):
-        self.trace = True
-        print(self.transporters_list)
+        #self.trace = True
         dx = particle.dx
         dy = particle.dy
-        newx, newy = self.transporters_list.actionteleport(particle.x,particle.y)
-        return Particle (newX + dx, newY + dy, dx, dy)
+        newx, newy = self.actionteleport(particle.x,particle.y)
+        return Particle (newx + dx, newy + dy, dx, dy)
 
 class Box:
     def __init__(self, width, height, elements):
@@ -201,7 +208,6 @@ class Box:
         particle = self._particle_of_string(description)
         while self._is_particle_in_box(particle):
             particle = self[particle.x, particle.y].step(particle)
-            print(self)
         return self._string_of_particle(particle)
 
 def build_interactively():
@@ -234,3 +240,4 @@ def build_interactively():
 box = build_interactively()
 print(box)
 print(box.simulate(input("entry point? ")))
+print(box)
