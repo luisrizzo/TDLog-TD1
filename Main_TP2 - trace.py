@@ -147,6 +147,9 @@ class Transporter :
         return Particle (newx + dx, newy + dy, dx, dy)
 
 class Box:
+    possible_directions = dict()
+    possible_directions['<'], possible_directions['>'], possible_directions['^'], possible_directions['v'] = "Exists for key","Exists for key","Exists for key","Exists for key","Exists for key","Exists for key"
+
     def __init__(self, width, height, elements):
         self._width = width
         self._height = height
@@ -206,8 +209,22 @@ class Box:
     def _is_particle_in_box(self, particle):
         return (particle.x >= 0) and (particle.x < self._width) \
            and (particle.y >= 0) and (particle.y < self._height)
-    def simulate(self, description):
-        particle = self._particle_of_string(description)
+    def simulate(self):
+        def input_ray():
+            while True:
+                try :
+                    ray=input("Entry point? ")
+                    ray_direction, ray_position = ray
+                    list_of_objects[ray_direction]
+                    letter_to_int[ray_position]
+                    break
+                except ValueError:
+                    print("Invalid input. Not the right amount of inputs")
+                except KeyError :
+                    print("One of the inputs was invalid. Try again")
+            return ray
+
+        particle = self._particle_of_string(input_ray())
         while self._is_particle_in_box(particle):
             particle = self[particle.x, particle.y].step(particle)
         return self._string_of_particle(particle)
@@ -217,10 +234,10 @@ def build_interactively():
 	    control_input = True
 	    while control_input :
 	    	try :
-			    width = int(input("width? "))
-			    height = int(input_dimension("height? "))
-				if (width < 3) or (width > 26):
-					print("invalid width")
+                width = int(input("width? "))
+                height = int(input_dimension("height? "))
+                if (width < 3) or (width > 26):
+                    print("invalid width")
 	        	if (height < 3) or (height > 26):
 	        		print("invalid height")
 	        	if (width >= 3) and (width <= 26) and (height >= 3) and (height <= 26):
@@ -264,5 +281,5 @@ def build_interactively():
 
 box = build_interactively()
 print(box)
-print(box.simulate(input("entry point? ")))
+print(box.simulate())
 print(box)
