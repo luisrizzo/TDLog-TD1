@@ -9,14 +9,15 @@ int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 
+possible_rays = dict()
+possible_rays['<'], possible_rays['>'], possible_rays['v'], possible_rays['^'] = "Exists for key","Exists for key","Exists for key","Exists for key"
+
 possible_objects = dict()
 possible_objects['/'], possible_objects['\\'], possible_objects['#'], possible_objects['|'], possible_objects['-'], possible_objects['o'] = "Exists for key","Exists for key","Exists for key","Exists for key","Exists for key","Exists for key"
 
 
 class Particle:
 	def __init__(self, x, y, dx, dy):
-		assert (dx in {-1, 0, 1}) and (dy in {-1, 0, 1}), "invalid dx/dy"
-		assert (dx != 0) or (dy != 0), "invalid dx/dy"
 		self._x = x
 		self._y = y
 		self._dx = dx
@@ -164,8 +165,6 @@ class Box:
 		return self._height
 	def __getitem__(self, key):
 		x, y = key
-		assert (x >= 0) and (x < self._width)
-		assert (y >= 0) and (y < self._height)
 		return self._grid[key]
 	def __str__(self):
 		rule = " " + string.ascii_uppercase[0:self._width] + " "
@@ -179,9 +178,7 @@ class Box:
 		lines.append(rule)
 		return "\n".join(lines)
 	def _particle_of_string(self, description):
-		assert (len(description) == 2)
 		direction, letter = description
-		assert (letter in string.ascii_uppercase)
 		if direction == '>':
 			return Particle(0, letter_to_int[letter], 1, 0)
 		elif direction == '<':
@@ -190,8 +187,6 @@ class Box:
 			return Particle(letter_to_int[letter], 0, 0, 1)
 		elif direction == '^':
 			return Particle(letter_to_int[letter], self._height - 1, 0, -1)
-		else:
-			assert False, "invalid direction"
 	def _string_of_particle(self, particle):
 		if particle.x < 0:
 			return "<" + int_to_letter[particle.y]
@@ -201,13 +196,30 @@ class Box:
 			return "^" + int_to_letter[particle.x]
 		elif particle.y >= self._height:
 			return "v" + int_to_letter[particle.x]
-		else:
-			assert False, "particle is still in the box"
 	def _is_particle_in_box(self, particle):
 		return (particle.x >= 0) and (particle.x < self._width) \
 		   and (particle.y >= 0) and (particle.y < self._height)
-	def simulate(self, description):
-		particle = self._particle_of_string(description)
+	def simulate(self):
+		def input_ray(list_of_rays):
+			control_input=True
+			while control_input :
+				try:
+					ray = input("Entry point ? ")
+					ray_kind, ray_position = ray
+					list_of_rays[ray_kind]
+					letter_to_int[ray_position]
+					if ray_kind=="^" or ray_kind=="v":
+						if letter_to_int[ray_position] < self._width: control_input=False
+						else: print("Entry point outside of the grid.")
+					else: 
+						if letter_to_int[ray_position] < self._height: control_input=False
+						else: print("Entry point outside of the grid.")
+				except ValueError:
+					print("Invalid input. Not the right amount of inputs")
+				except KeyError :
+					print("One of the inputs was invalid. Try again")
+			return ray
+		particle = self._particle_of_string(input_ray(possible_rays))
 		while self._is_particle_in_box(particle):
 			particle = self[particle.x, particle.y].step(particle)
 		return self._string_of_particle(particle)
@@ -230,7 +242,8 @@ def build_interactively():
 		return (width,height)
 
 	def input_object(list_of_objects):
-		while True :
+		control_input=True
+		while control_input :
 			try:
 				obj_obj = input("Add new object ? ")
 				if obj_obj=="":
@@ -239,7 +252,8 @@ def build_interactively():
 				letter_to_int[x_obj]
 				letter_to_int[y_obj]
 				list_of_objects[kind_obj]
-				break
+				if letter_to_int[x_obj] < width and letter_to_int[y_obj] < height: control_input=False
+				else: print("Position outside of the grid.")
 			except ValueError:
 				print("Invalid input. Not the right amount of inputs")
 			except KeyError :
@@ -266,5 +280,5 @@ def build_interactively():
 
 box = build_interactively()
 print(box)
-print(box.simulate(input("entry point? ")))
+print(box.simulate())
 print(box)
