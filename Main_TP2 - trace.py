@@ -9,6 +9,10 @@ int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 
+possible_objects = dict()
+possible_objects['/'], possible_objects['\\'], possible_objects['#'], possible_objects['|'], possible_objects['-'], possible_objects['o'] = "Exists for key","Exists for key","Exists for key","Exists for key","Exists for key","Exists for key"
+
+
 class Particle:
     def __init__(self, x, y, dx, dy):
         assert (dx in {-1, 0, 1}) and (dy in {-1, 0, 1}), "invalid dx/dy"
@@ -144,8 +148,6 @@ class Transporter :
 
 class Box:
     def __init__(self, width, height, elements):
-        assert (width >= 3) and (width <= 26), "invalid width"
-        assert (height >= 3) and (height <= 26), "invalid height"
         self._width = width
         self._height = height
         self._grid = dict()
@@ -211,31 +213,54 @@ class Box:
         return self._string_of_particle(particle)
 
 def build_interactively():
-    def input_dimension(text):
-        res = input(text)
-        assert res.isdigit(), "invalid dimension"
-        return int(res)
-    width = input_dimension("width? ")
-    height = input_dimension("height? ")
-    mirrors = []
+    def input_dimension():
+	    control_input = True
+	    while control_input :
+	    	try :
+			    width = int(input("width? "))
+			    height = int(input_dimension("height? "))
+				if (width < 3) or (width > 26):
+					print("invalid width")
+	        	if (height < 3) or (height > 26):
+	        		print("invalid height")
+	        	if (width >= 3) and (width <= 26) and (height >= 3) and (height <= 26):
+	        		control_input = False
+			except ValueError:
+				print ("Oops. One of the inputs was not a number")
+		return (widht,height)
+
+	def input_object(list_of_objects):
+		while True :
+			try:
+				obj_obj = input("Add new object ? ")
+				x_obj, y_obj, kind_obj = obj_obj
+				letter_to_int[x_obj]
+				letter_to_int[y_obj]
+				list_of_objects[kind_obj]
+            	break
+            except ValueError:
+            	print("Invalid input. Not the right amount of inputs")
+        	except KeyError :
+        		print("One of the inputs was invalid. Try again")
+		return obj_obj
+
+	widht, height = input_dimension()
+    objects_list = []
     transporters = []
-    mirror_desc = input("mirror? ")
-    while mirror_desc:
-        assert len(mirror_desc) == 3, "invalid mirror description"
-        x, y, kind = mirror_desc
-        assert (x in string.ascii_uppercase)
-        if kind == '/': mirror_obj = ForwardSlashMirror()
-        elif kind == '\\': mirror_obj = BackSlashMirror()
-        elif kind == "|": mirror_obj = VerticalMirror()
-        elif kind == "-": mirror_obj = HorizontalMirror()
-        elif kind == "#": mirror_obj = SquareMirror()
+    object_desc = input_object(possible_objects)
+    while object_desc:
+        x, y, kind = object_desc
+        if kind == '/': object_obj = ForwardSlashMirror()
+        elif kind == '\\': object_obj = BackSlashMirror()
+        elif kind == "|": object_obj = VerticalMirror()
+        elif kind == "-": object_obj = HorizontalMirror()
+        elif kind == "#": object_obj = SquareMirror()
         elif kind == "o":
             transporters.append((letter_to_int[x], letter_to_int[y]))
-            mirror_obj = Transporter(transporters)
-        else: assert False, "invalid mirror kind"
-        mirrors.append((letter_to_int[x], letter_to_int[y], mirror_obj))
-        mirror_desc = input("mirror? ")
-    return Box(width, height, mirrors)
+            object_obj = Transporter(transporters)
+        objects_list.append((letter_to_int[x], letter_to_int[y], object_obj))
+        object_desc = input_object(possible_objects)
+    return Box(width, height, objects_list)
 
 box = build_interactively()
 print(box)
