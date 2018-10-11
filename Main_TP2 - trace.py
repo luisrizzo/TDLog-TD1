@@ -1,4 +1,12 @@
-#!/usr/bin/env python
+#Ecole Nationale des Ponts et Chaussées
+#Techniques de Développement Logiciel
+#TP 2
+#Fait par Luis Augusto YOKOTA RIZZO et Daniel Toshihiro OKANE
+
+#Nous avons choisi de prendre le code corrigé du TP1 de Xavier, selon les possibilités données par M Thierry Martinez.
+#Pour la trajectoire du rayon, nous avons décidé que si le rayon passe par un object, sa répresentation ne changera pas pour mieux comprendre la raison
+#du changement de la direction ou de la position du rayon. Neanmoins, nous avons écrit des lignes de code en commentaire qui pourraient changer la 
+#representation de l'object par la representation de la trajectoire.
 
 import string
 import random
@@ -215,9 +223,9 @@ class Box:
 						if letter_to_int[ray_position] < self._height: control_input=False
 						else: print("Entry point outside of the grid.")
 				except ValueError:
-					print("Invalid input. Not the right amount of inputs")
+					print("Invalid input. Not the right amount of inputs.")
 				except KeyError :
-					print("One of the inputs was invalid. Try again")
+					print("One of the inputs was invalid. Try again.")
 			return ray
 		particle = self._particle_of_string(input_ray(possible_rays))
 		while self._is_particle_in_box(particle):
@@ -229,23 +237,23 @@ def build_interactively():
 		control_input = True
 		while control_input :
 			try :
-				width = int(input("width? "))
-				height = int(input("height? "))
+				width = int(input("Width? "))
+				height = int(input("Height? "))
 				if (width < 3) or (width > 26):
-					print("invalid width")
+					print("Invalid width.")
 				if (height < 3) or (height > 26):
-					print("invalid height")
+					print("Invalid height.")
 				if (width >= 3) and (width <= 26) and (height >= 3) and (height <= 26):
 					control_input = False
 			except ValueError:
-				print ("Oops. One of the inputs was not a number")
+				print ("Oops. One of the inputs was not a number.")
 		return (width,height)
 
 	def input_object(list_of_objects):
 		control_input=True
 		while control_input :
 			try:
-				obj_obj = input("Add new object ? ")
+				obj_obj = input("Add new object? ")
 				if obj_obj=="":
 					break
 				x_obj, y_obj, kind_obj = obj_obj
@@ -255,9 +263,9 @@ def build_interactively():
 				if letter_to_int[x_obj] < width and letter_to_int[y_obj] < height: control_input=False
 				else: print("Position outside of the grid.")
 			except ValueError:
-				print("Invalid input. Not the right amount of inputs")
+				print("Invalid input. Not the right amount of inputs.")
 			except KeyError :
-				print("One of the inputs was invalid. Try again")
+				print("One of the inputs was invalid. Try again.")
 		return obj_obj
 
 	width, height = input_dimension()
