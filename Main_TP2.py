@@ -3,10 +3,21 @@
 #TP 2
 #Fait par Luis Augusto YOKOTA RIZZO et Daniel Toshihiro OKANE
 
+
 #Nous avons choisi de prendre le code corrigé du TP1 de Xavier, selon les possibilités données par M Thierry Martinez.
-#Pour la trajectoire du rayon, nous avons décidé que si le rayon passe par un object, sa répresentation ne changera pas pour mieux comprendre la raison
+
+#1.Mirroirs additionelles: Nous avons créé une nouvelle classe pour chaque nouveau type de mirroir, avec une structure similaire des mirroir du TP1.
+
+#2.Trace: Pour la trajectoire du rayon, nous avons décidé que si le rayon passe par un object, sa répresentation ne changera pas pour mieux comprendre la raison
 #du changement de la direction ou de la position du rayon. Neanmoins, nous avons écrit des lignes de code en commentaire qui pourraient changer la 
 #representation de l'object par la representation de la trajectoire.
+#La trajectoire est donnée a partir du changement de la répresentation du charactère de la classe que le rayon a passée. Ce changement est fait en utilisant
+#un nouveau attribute de la classe qui s'appele 'trace'.
+
+#3.Transporters: Pour les transporters nous avons ajouté une nouvelle classe, comme pour les mirroirs. Dans ce cas, il a aussi une liste comme input de la création
+#de la classe, avec tous la positions de tous les transporters. Cette liste est utilisée quand le rayon entre dans un transporter et ira apparaitre dans un transporter
+#différent.
+
 
 import string
 import random
@@ -147,6 +158,7 @@ class Transporter :
 			newy = self.transporters_list[i][1]
 			return (newx , newy)
 		else:
+			print(box)
 			sys.exit(0)
 	def step(self,particle):
 		#self.trace = True
