@@ -4,12 +4,24 @@
 #Fait par Luis Augusto YOKOTA RIZZO
 #      et Daniel Toshihiro OKANE
 
+#1- Non-deterministique
+# Si la particule entre dans un transporteur on doit pas avoir un simple retour mais une liste des résultats
+# Compliqué si on commance à avoir trop des entrés dans des transporteurs divers
+
+#2a -Tests:
+#On a mis quelques doctests dans des methodes simples pour faire les tests unitaires
+#2b - Tests aléatoires avec Hypothesis :
+#Surtout pour des tests de validation
+
+
 #!/usr/bin/env python
 
 import random
 import string
-import unitest
+import unittest
 import doctest
+#from hypothesis import given
+#from hypothesis.strategies import text
 
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
                               string.ascii_uppercase))
@@ -42,10 +54,15 @@ class Aether:
     def char_representation(self):
         return ' '
     def step(self, particle):
+        """ calculer le prochaine état de la particule (nouvelles coordones + nouvelle direction)
+        >>> p=Particle(4,4,1,0)
+        >>> step(p)
+        particle(5,4,1,0)
+        """
         return Particle(particle.x + particle.dx,
-                        particle.y + particle.dy,
-                        particle.dx,
-                        particle.dy)
+                particle.y + particle.dy,
+                particle.dx,
+                particle.dy)
 
 class ForwardSlashMirror:
     def __init__(self):
@@ -54,6 +71,11 @@ class ForwardSlashMirror:
     def char_representation(self):
         return '/'
     def step(self, particle):
+        """ calculer le prochaine état de la particule (nouvelles coordones + nouvelle direction)
+        >>> p=Particle(4,4,1,0)
+        >>> step(p)
+        particle(4,3,0,-1)
+        """
         dx = -particle.dy
         dy = -particle.dx
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
@@ -65,6 +87,11 @@ class BackSlashMirror:
     def char_representation(self):
         return '\\'
     def step(self, particle):
+        """ calculer le prochaine état de la particule (nouvelles coordones + nouvelle direction)
+        >>> p=Particle(4,4,1,0)
+        >>> step(p)
+        particle(4,5,0,1)
+        """
         dx = particle.dy
         dy = particle.dx
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
@@ -76,10 +103,17 @@ class HorizontalMirror:
     def char_representation(self):
         return '-'
     def step(self, particle):
+        """ calculer le prochaine état de la particule (nouvelles coordones + nouvelle direction)
+        >>> p=Particle(4,4,1,0)
+        >>> step(p)
+        particle(5,4,1,0)
+        >>> p=Particle(4,4,0,1)
+        >>> step(p)
+        particle(4,3,0,-1)
+        """
         dx = particle.dx
         dy = -particle.dy
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
-
 class VerticalMirror:
     def __init__(self):
         pass
@@ -87,9 +121,19 @@ class VerticalMirror:
     def char_representation(self):
         return '|'
     def step(self, particle):
+        """calculer le prochaine état de la particule (nouvelles coordones + nouvelle direction)
+        >>> p=Particle(4,4,1,0)
+        >>> step(p)
+        particle(5,4,1,0)
+        >>> p=Particle(4,4,0,1)
+        >>> step(p)
+        particle(4,3,0,-1)
+        """
         dx = -particle.dx
         dy = particle.dy
         return Particle(particle.x + dx, particle.y + dy, dx, dy)
+
+
 
 class SquareMirror:
     def __init__(self):
@@ -105,12 +149,14 @@ class SquareMirror:
 class Transporter:
     def __init__(self, o):
         self._outputs = o
+        self._counter_teleporters = 0
     @property
     def char_representation(self):
         return 'o'
     def step(self, particle):
         if len(self._outputs) > 0:
-            x, y = random.choice(self._outputs)
+            x, y = (self._outputs[self._counter_teleporters])
+            self._counter_teleporters += 1
             dx = particle.dx
             dy = particle.dy
             return Particle(x + dx, y + dy, dx, dy)
@@ -186,13 +232,19 @@ class Box:
         return (particle.x >= 0) and (particle.x < self._width) \
            and (particle.y >= 0) and (particle.y < self._height)
     def simulate_with_trace(self, description):
+        list_of_exit_symbols = []
+        
         particle = self._particle_of_string(description)
         trace = set()
+    
         while self._is_particle_in_box(particle):
             trace.add((particle.x, particle.y))
             particle = self[particle.x, particle.y].step(particle)
             if particle == None: return None, trace
-        return self._string_of_particle(particle), trace
+        
+
+            list_of_exit_symbols.append(self._string_of_particle(particle))
+        return list_of_exit_symbols , trace
     def simulate(self, description):
         exit_desc, trace = self.simulate_with_trace(description)
         return exit_desc
@@ -231,8 +283,13 @@ def build_interactively():
         transporters.append((x, y, Transporter(other_holes)))
     return Box(width, height, mirrors + transporters)
 
-box = build_interactively()
-print(box)
-exit_point, trace = box.simulate_with_trace(input("entry point? "))
-print("exit point:", exit_point)
-print(box.string_with_trace(trace))
+def All_exits ():
+    box = build_interactively()
+    print(box)    
+    list_of_exits, traces = box.simulate_with_trace(input("entry point?"),nb_exits)
+    print(box.string_with_trace(trace))
+    print("exit points:", list_of_exits)
+
+#All_exits()
+doctest.testmod()
+print(input("testemod"))
