@@ -8,17 +8,19 @@
 #A chaque fois que la particule entre dans un transporteur on va faire deux choses :
 #1- Elle va sortir dans le premier transporteur de la liste de possibilités
 #2- Tous les autres possibilités de sortie seront enregistrés comme des nouvelles particules qui seront mises dans le système
-#Donc la particule sur 1 continue son trajet jusqu'à la fin ou une liste des sorties va recevoir ce valeur
+#Donc la particule sur 1 continue son trajet jusqu'à la fin, quand une liste des sorties va recevoir ce valeur
 #Quand 1 est sortie du système les particules de 2 seront mises dans le système
 #
 #Pour éviter des boucles infinis on va établir un système de parcours maximum d'une particule
 #Ce limite serait égal à width * height 
 # ABCDEF
-#A o
-#B  o  o
-#C  o  o
-#D
-#E 
+#A o    A
+#B  o  oB
+#C  o  oC
+#D      D
+#E      E
+#F      F
+# ABCDEF
 #Une particule qui a une entré >A peut entrer dans AB, sortir vers BC, entrer dans BF, sortir CC, entrer CF et recommencer le parcours à BC, etc,etc
 
 #2a -Tests:
@@ -76,7 +78,8 @@ class Aether:
 		return Particle(particle.x + particle.dx,
 				particle.y + particle.dy,
 				particle.dx,
-				particle.dy,particle.p+1)
+				particle.dy,
+				particle.p+1)
 
 class ForwardSlashMirror:
 	def __init__(self):
@@ -237,7 +240,7 @@ class Box:
 	def simulate_nondeterministic(self,particle):
 		trace = set()
 		while self._is_particle_in_box(particle) and particle.p < self._maxp:
-			trace.add((particle.x, particle.y))
+			trace.add((particle.x, particle.y))	
 			particle = self[particle.x, particle.y].step(particle)
 			if particle == None: return None, trace
 		exit_symbols = (self._string_of_particle(particle))
