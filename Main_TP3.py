@@ -91,7 +91,19 @@ class ForwardSlashMirror:
 		dx = -particle.dy
 		dy = -particle.dx
 		return Particle(particle.x + dx, particle.y + dy, dx, dy, particle.p+1)
+		"""Test if step is working fine
+		o = ForwardSlashMirror()
+		p = Particle (2,2,0,1,0)
+		print(o.step(p))
+		>>> Particle(1, 2, -1, 0,1)
+		"""
 
+		"""Test if step is working fine
+		o = ForwardSlashMirror()
+		p = o.step(Particle(2,2,0,1,0))
+		print(print(p.x,",",p.y))
+		>>> (1, 2)
+		"""
 class BackSlashMirror:
 	def __init__(self):
 		pass
@@ -123,8 +135,6 @@ class VerticalMirror:
 		dx = -particle.dx
 		dy = particle.dy
 		return Particle(particle.x + dx, particle.y + dy, dx, dy, particle.p+1)
-
-
 
 class SquareMirror:
 	def __init__(self):
