@@ -8,6 +8,7 @@
 #A chaque fois que la particule entre dans un transporteur on va faire deux choses :
 #1- Elle va sortir dans le premier transporteur de la liste de possibilités
 #2- Tous les autres possibilités de sortie seront enregistrés comme des nouvelles particules qui seront mises dans le système
+#Les particules qui ont la même position et direction que d'autres particules existants dans la liste ne sont pas ajoutées
 #Donc la particule sur 1 continue son trajet jusqu'à la fin, quand une liste des sorties va recevoir ce valeur
 #Quand 1 est sortie du système les particules de 2 seront mises dans le système
 #
@@ -36,9 +37,6 @@ import random
 import string
 import unittest
 import doctest
-
-#from hypothesis import given
-#from hypothesis.strategies import text
 
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
                               string.ascii_uppercase))
@@ -71,6 +69,8 @@ class Particle:
     def dy(self): return self._dy
     @property
     def p(self): return self._p
+    @property
+    def identity(self): return self._x,self._y,self._dx,self._dy,self._p
     def __str__(self):
         return "<{}, {}, {}, {}>".format(self._x, self._y, self._dx, self._dy)
 
@@ -149,14 +149,11 @@ class Transporter:
         return 'o'
     def step(self, particle):
         if len(self._outputs) > 0:
-            All_entries(particle,self._outputs)
+            test_all_entries=All_entries(particle,self._outputs)
             dx = particle.dx
             dy = particle.dy
             x, y = (self._outputs[0])
-            if not(particle.x == x and particle.y == y):
-                return Particle(x + dx, y + dy, dx, dy, particle.p+1)
-            else:
-                return None
+            return Particle(x + dx, y + dy, dx, dy, particle.p+1)
         else:
             return None
 
@@ -169,8 +166,8 @@ class Box:
         self._grid = dict()
         for (x, y, element) in elements:
             self._grid[x, y] = element
-        #self._maxp = self._height * self._width
-        self._maxp =15
+        self._maxp = self._height * self._width/2
+
     @property
     def width(self):
         return self._width
@@ -261,7 +258,6 @@ class Box:
             if exits in list_of_exits : list_of_exits[exits]+=1 
             elif exits == None: pass
             else: list_of_exits[exits]=1
-            print(list_of_exits)
         return list_of_exits, trace
 
     def simulate_nondeterministic(self,particle,initial_trace):
@@ -348,15 +344,15 @@ def All_entries(particle,transporters_list):
     dy = particle.dy
     for i in range(len(transporters_list)):
         x, y = (transporters_list[i])
-        if not(particle.x == x and particle.y == y) and i != 0:
+        if not(particle.x == x and particle.y == y):
             test_repetition = False
-            for entry in list_of_entries:
-                if entry.x == x+dx and entry.y == y+dy  and entry.dx == dx and entry.dy == dy:
-                    test_repetition = True
+            if list_of_entries == []:pass
+            else:
+                for entry in list_of_entries:
+                    if entry.x == x+dx and entry.y == y+dy  and entry.dx == dx and entry.dy == dy:
+                        test_repetition = True
             if not(test_repetition) : list_of_entries.append(Particle(x+dx,y+dy,dx,dy,particle.p+1))
-            #if (x,y,dx,dy) in list_of_entries: pass
-            #else:list_of_entries[(x,y,dx,dy)] = (Particle(x+dx,y+dy,dx,dy,particle.p+1))
-    return None
+    return list_of_entries
 
 
 def All_exits ():
@@ -366,5 +362,4 @@ def All_exits ():
     list_of_exits, trace = box.simulate_with_trace(box.input_ray(possible_rays),0)
     print(box.string_with_trace(trace))
     print("exit points:", list_of_exits)
-    
-All_exits()
+    return list_of_exits
