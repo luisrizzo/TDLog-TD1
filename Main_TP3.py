@@ -153,7 +153,7 @@ class Transporter:
             dx = particle.dx
             dy = particle.dy
             x, y = (self._outputs[0])
-            if particle.x != x and particle.y != y:
+            if not(particle.x == x and particle.y == y):
                 return Particle(x + dx, y + dy, dx, dy, particle.p+1)
             else:
                 return None
@@ -169,7 +169,8 @@ class Box:
         self._grid = dict()
         for (x, y, element) in elements:
             self._grid[x, y] = element
-        self._maxp = self._height * self._width
+        #self._maxp = self._height * self._width
+        self._maxp =15
     @property
     def width(self):
         return self._width
@@ -229,41 +230,47 @@ class Box:
     def _is_particle_in_box(self, particle):
         return (particle.x >= 0) and (particle.x < self._width) \
            and (particle.y >= 0) and (particle.y < self._height)
+           
+    def input_ray(self, list_of_rays):
+        control_input=True
+        while control_input :
+            try:
+                ray = input("Entry point ? ")
+                ray_kind, ray_position = ray
+                list_of_rays[ray_kind]
+                letter_to_int[ray_position]
+                if ray_kind=="^" or ray_kind=="v":
+                    if letter_to_int[ray_position] < self._width: control_input=False
+                    else: print("Entry point outside of the grid.")
+                else: 
+                    if letter_to_int[ray_position] < self._height: control_input=False
+                    else: print("Entry point outside of the grid.")
+            except ValueError:
+                print("Invalid input. Not the right amount of inputs.")
+            except KeyError :
+                print("One of the inputs was invalid. Try again.")
+        return ray
 
-    def simulate_with_trace(self, p_counter):
-        def input_ray(list_of_rays):
-            control_input=True
-            while control_input :
-                try:
-                    ray = input("Entry point ? ")
-                    ray_kind, ray_position = ray
-                    list_of_rays[ray_kind]
-                    letter_to_int[ray_position]
-                    if ray_kind=="^" or ray_kind=="v":
-                        if letter_to_int[ray_position] < self._width: control_input=False
-                        else: print("Entry point outside of the grid.")
-                    else: 
-                        if letter_to_int[ray_position] < self._height: control_input=False
-                        else: print("Entry point outside of the grid.")
-                except ValueError:
-                    print("Invalid input. Not the right amount of inputs.")
-                except KeyError :
-                    print("One of the inputs was invalid. Try again.")
-            return ray
+    def simulate_with_trace(self, description, p_counter):
         global list_of_entries
-        list_of_exits = []
-        list_of_entries.append(self._particle_of_string(input_ray(possible_rays),p_counter))
+        list_of_exits = dict()
+        trace=set()
+        list_of_entries.append(self._particle_of_string(description,p_counter))
         for all_particles in list_of_entries:
-            exits, trace = self.simulate_nondeterministic(all_particles)
-            list_of_exits.append(exits)
+            exits, trace = self.simulate_nondeterministic(all_particles,trace)
+            if exits in list_of_exits : list_of_exits[exits]+=1 
+            elif exits == None: pass
+            else: list_of_exits[exits]=1
+            print(list_of_exits)
         return list_of_exits, trace
 
-    def simulate_nondeterministic(self,particle):
-        trace = set()
-        while self._is_particle_in_box(particle) and particle.p < self._maxp:
+    def simulate_nondeterministic(self,particle,initial_trace):
+        trace = initial_trace
+        while self._is_particle_in_box(particle):
             trace.add((particle.x, particle.y))    
             particle = self[particle.x, particle.y].step(particle)
             if particle == None: return None, trace
+            if particle.p >= self._maxp: return None, trace
         exit_symbols = (self._string_of_particle(particle))
         return exit_symbols , trace
     #def simulate(self, description):
@@ -341,15 +348,22 @@ def All_entries(particle,transporters_list):
     dy = particle.dy
     for i in range(len(transporters_list)):
         x, y = (transporters_list[i])
-        if particle.x != x and particle.y != y and i != 0:
-            list_of_entries.append(Particle(x+dx,y+dy,dx,dy,particle.p+1))
+        if not(particle.x == x and particle.y == y) and i != 0:
+            test_repetition = False
+            for entry in list_of_entries:
+                if entry.x == x+dx and entry.y == y+dy  and entry.dx == dx and entry.dy == dy:
+                    test_repetition = True
+            if not(test_repetition) : list_of_entries.append(Particle(x+dx,y+dy,dx,dy,particle.p+1))
+            #if (x,y,dx,dy) in list_of_entries: pass
+            #else:list_of_entries[(x,y,dx,dy)] = (Particle(x+dx,y+dy,dx,dy,particle.p+1))
     return None
 
 
 def All_exits ():
+
     box = build_interactively()
     print(box)
-    list_of_exits, trace = box.simulate_with_trace(0)
+    list_of_exits, trace = box.simulate_with_trace(box.input_ray(possible_rays),0)
     print(box.string_with_trace(trace))
     print("exit points:", list_of_exits)
     

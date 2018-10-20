@@ -39,11 +39,11 @@ class TestMirrors(unittest.TestCase):
         self.assertEqual((p_h.x,p_h.y,p_h.dx,p_h.dy,p_h.p),(1, 2, -1, 0,1))
 
         
-class TestMirrors(unittest.TestCase):        
+class TestBuilder(unittest.TestCase):        
     
     def test_build_interactively(self):
-        user_input = ['26','26','BBo','BDo','CC/','CDo','ED#']
-        expected_mirrors = []
+        user_input = ['26','26','BBo','BDo','CC/','CDo','ED#',]
+        expected_box = []
         expected_transporters = []
         expected_holes = []
         
