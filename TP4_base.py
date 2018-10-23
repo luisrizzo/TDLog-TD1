@@ -8,6 +8,7 @@
 import functools
 import random
 import string
+from PyQt4.QtGui import *
 
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 							  string.ascii_uppercase))
