@@ -7,7 +7,6 @@ from PyQt4.QtGui import *
 #new_grid, entry = TP4_base.box_and_entry_point()
 
 new_grid = TP4_base.build_interactively()
-print (new_grid)
 
 #app = QApplication(sys.argv)
 TP4_Interface.window_app(new_grid)
