@@ -58,6 +58,10 @@ class Aether(Deterministic):
 						particle.y + particle.dy,
 						particle.dx,
 						particle.dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/aether.png"))
+		return label
 
 class ForwardSlashMirror(Deterministic):
 	def __init__(self):
@@ -69,6 +73,10 @@ class ForwardSlashMirror(Deterministic):
 		dx = -particle.dy
 		dy = -particle.dx
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/forward_slash_mirror.png"))
+		return label
 
 class BackSlashMirror(Deterministic):
 	def __init__(self):
@@ -80,6 +88,10 @@ class BackSlashMirror(Deterministic):
 		dx = particle.dy
 		dy = particle.dx
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/back_slash_mirror.png"))
+		return label
 
 class HorizontalMirror(Deterministic):
 	def __init__(self):
@@ -91,6 +103,10 @@ class HorizontalMirror(Deterministic):
 		dx = particle.dx
 		dy = -particle.dy
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/horizontal_mirror.png"))
+		return label
 
 class VerticalMirror(Deterministic):
 	def __init__(self):
@@ -102,6 +118,10 @@ class VerticalMirror(Deterministic):
 		dx = -particle.dx
 		dy = particle.dy
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/vertical_mirror.png"))
+		return label
 
 class SquareMirror(Deterministic):
 	def __init__(self):
@@ -113,6 +133,10 @@ class SquareMirror(Deterministic):
 		dx = -particle.dx
 		dy = -particle.dy
 		return Particle(particle.x + dx, particle.y + dy, dx, dy)
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/square_mirror.png"))
+		return label
 
 class Transporter:
 	def __init__(self, o):
@@ -132,6 +156,10 @@ class Transporter:
 		dx = particle.dx
 		dy = particle.dy
 		return { Particle(x + dx, y + dy, dx, dy) for x, y in self._outputs }
+	def img_repr(self):
+		label = QLabel()
+		label.setPixmap(QPixmap("images/transporter.png"))
+		return label
 
 def partition(predicate, iterable):
 	true_set = set()
@@ -396,10 +424,20 @@ def box_and_entry_point(draw):
 								max_size=max_mirrors))
 	transporters = []
 	if draw(strats.booleans()):
-		holes = draw(strats.lists(strats.tuples(gen_x,\
-										gen_y,\
-										min_size = 2,\
-										max_size = max_mirrors - len(mirrors))))
+		holes = []
+		x = draw(gen_x)
+		y = draw(gen_y)
+		holes.append((x,y))
+		number = draw(strats.integers(min_value = 2, max_value = max_mirrors - len(mirrors)))
+		print(numbers)
+		while len(holes) != number :
+			newx = draw(gen_x)
+			newy = draw(gen_y)
+			repetition = False
+			for (x,y) in holes:
+				if x == newx and y == newy:
+					repetition = True
+			if not(repetition):holes.append((x,y))
 		for idx, (x, y) in enumerate(holes):
 			other_holes = holes[:idx] + holes[idx+1:]
 			transporters.append((x, y, Transporter(other_holes)))
