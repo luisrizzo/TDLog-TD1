@@ -13,18 +13,13 @@ print("Grid Generated")
 entry_ray = TP4_base.random_entrance(new_grid)
 print("Entry Ray Generated")
 
-#app = QApplication(sys.argv)
 print("Launching Interface")
 #TP4_Interface.window_app(new_grid,entry_ray)
 entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
 exits = new_grid.get_exits(entry_ray)
 print(exits)
+
 #sys.exit(app.exec_())
-
-#traces = new_grid.simulate_nondeterministic_with_trace(entry)
-
-
-
 
 """
 a=TP4_base.ForwardSlashMirror()
