@@ -14,9 +14,14 @@ entry_ray = TP4_base.random_entrance(new_grid)
 print("Entry Ray Generated")
 
 print("Launching Interface")
-#TP4_Interface.window_app(new_grid,entry_ray)
+TP4_Interface.window_app(new_grid,entry_ray)
+
+
+print("Simulating grid")
 entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
 exits = new_grid.get_exits(entry_ray)
+
+print("Comparing results")
 print(exits)
 
 #sys.exit(app.exec_())
