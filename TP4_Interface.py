@@ -1,36 +1,41 @@
 import sys
 from PyQt4.QtGui import *
 import TP4_base
+import time
+import random
+class Clock(QLCDNumber):
+	def __init__(self):
+		super(Clock,self).__init__()
+		self.timer = QTimer()
+		self.timer.timeout.connect(self._update)
+		self.timer.start(1000)
+	def _update(self):
+		time = QTimer.currentTime().toString()
+		self.displayTime()
 
 class window_app():
-	def __init__(self,grid):
+	def __init__(self,grid,entryray):
 		app = QApplication(sys.argv)
 		window = QWidget()
 		window.setWindowTitle("Ray Game")
 		window.show()
 		window.resize((grid.height+4) * 64 , (grid.width+4) * 64)
 		layout = QGridLayout(window)
+		#timer = Clock()
+		#layout.addWidget (timer,0,0)
 		layout_elements = dict()
 		button_elements = dict()
 		for x in range(2,2+grid.width):
 			layout_elements[x,0] = QLabel("?")
-			layout_elements[x,0].resize(64,64)
 			layout_elements[x,4+grid.height] = QLabel("?")
-			layout_elements[x,4+grid.height].resize(64,64)
+			#button_elements[x,1] = buttom_app(x,1,"^")
 			button_elements[x,1] = QPushButton("^")
-			button_elements[x,1].resize(64,64)
 			button_elements[x,3+grid.height] = QPushButton("v")
-			button_elements[x,3+grid.height].resize(64,64)
 		for y in range(2,2+grid.height):
 			layout_elements[0,y] = QLabel("?")
-			layout_elements[0,y].resize(64,64)
 			layout_elements[4+grid.width,y] = QLabel("?")
-			layout_elements[4+grid.width,y].resize(64,64)
 			button_elements[1,y] = QPushButton("<")
-			button_elements[1,y].resize(64,64)
 			button_elements[3+grid.width,y] = QPushButton(">")
-			button_elements[3+grid.width,y].resize(64,64)
-			
 		for x in range(2,2+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
 			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
@@ -44,13 +49,21 @@ class window_app():
 		for x in range(2,2+grid.width):
 			for y in range(2,2+grid.height):
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
+		for x in range(2,2+grid.width):
+			layout_elements[x,0].setText("")
+			layout_elements[x,4+grid.height].setText("")
+		for y in range(2,2+grid.height):
+			layout_elements[0,y].setText("")
+			layout_elements[4+grid.width,y].setText("")
+		#print(entryray[0],entryray[1])
+		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
 
 		sys.exit(app.exec_())
-class buttom_app():
+class buttom_app(QPushButton):
 	def __init__(self,x,y,desc):
 		self._x=x
 		self._y=y
-		return QPushButton(desc)
+		super(buttom_app,self).__init__(desc)
 
 """def window_app(grid):
 	app = QApplication(sys.argv)

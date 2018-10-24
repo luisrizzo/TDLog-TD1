@@ -2,15 +2,23 @@ import TP4_base
 import TP4_Interface
 import sys
 from PyQt4.QtGui import *
-
+import random
 
 #new_grid, entry = TP4_base.box_and_entry_point()
 
 new_grid = TP4_base.build_automaticaly()
+#print(new_grid)
+print("Grid Generated")
+
+entry_ray = TP4_base.random_entrance(new_grid)
+print("Entry Ray Generated")
 
 #app = QApplication(sys.argv)
-TP4_Interface.window_app(new_grid)
-
+print("Launching Interface")
+#TP4_Interface.window_app(new_grid,entry_ray)
+entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
+exits = new_grid.get_exits(entry_ray)
+print(exits)
 #sys.exit(app.exec_())
 
 #traces = new_grid.simulate_nondeterministic_with_trace(entry)

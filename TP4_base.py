@@ -268,6 +268,22 @@ class Box:
 											possible_positions)
 		return set(map(self._string_of_particle, outside_box)), \
 			   { (particle.x, particle.y) for particle in inside_box }
+	def get_exits(self, description):
+		particle = self._particle_of_string(description)
+		possible_positions = { particle }
+		previous_positions = set()
+		while previous_positions != possible_positions:
+			previous_positions = possible_positions
+			new_positions_list = [
+				self[particle.x, particle.y].step_nondeterministic(particle)
+				for particle in previous_positions
+				if self._is_particle_in_box(particle)
+			]
+			new_positions = functools.reduce(set.union, new_positions_list)
+			possible_positions = previous_positions.union(new_positions)
+		inside_box, outside_box = partition(self._is_particle_in_box,
+											possible_positions)
+		return set(map(self._string_of_particle, outside_box))
 
 def build_interactively():
 	def input_dimension(text):
@@ -318,6 +334,9 @@ def build_automaticaly():
 	transporters = []
 	nb_elements = random.randint(1,(width * height)//2)
 	nb_mirror = random.randint(1,nb_elements)
+	#prints used to verify numbers
+	#print(nb_elements)
+	#print (nb_mirror)
 	while len(mirrors)!=nb_mirror:
 		x = random.randint(0,width)
 		y = random.randint(0,height)
@@ -329,6 +348,7 @@ def build_automaticaly():
 	while len(holes) != (nb_elements - nb_mirror):
 		x = random.randint(0,width)
 		y = random.randint(0,height)
+		repetition = False
 		for (oldx,oldy) in holes:
 			if x == oldx and y == oldy:
 				repetition = True
@@ -337,6 +357,44 @@ def build_automaticaly():
 		other_holes = holes[:idx] + holes[idx+1:]
 		transporters.append((x, y, Transporter(other_holes)))
 	return Box(width, height, mirrors + transporters)
+def random_entrance(new_grid):
+	if bool(random.getrandbits(1)):
+		#code pour entré de ray vertical
+		xray = random.randint(2,2+new_grid.width)
+		if bool(random.getrandbits(1)):
+			yray = 0
+			symbol = "v"
+		else:
+			yray = 4 + new_grid.height
+			symbol = "^"
+	else:
+		#code pour entré de ray horizontal
+		yray = random.randint(2,2+new_grid.height)
+		if bool(random.getrandbits(1)):
+			xray = 0
+			symbol = ">"
+		else:
+			xray = 4 + new_grid.width
+			symbol = "<"
+	return (xray,yray,symbol)
+
+def convert_ray(entry_ray,grid):
+	#print(entry_ray[0],entry_ray[1])
+	#print(grid.width,grid.height)
+	if entry_ray[0] == 0:
+		return ">" + int_to_letter[entry_ray[1]-2]
+	elif entry_ray[0] >= grid.width+2:
+		return "<" + int_to_letter[entry_ray[1]-2]
+	elif entry_ray[1] == 0:
+		return "v" + int_to_letter[entry_ray[0]-2]
+	elif entry_ray[1]>= grid.height+2:
+		return "^" + int_to_letter[entry_ray[0]-2]
+
+
+
+
+
+
 
 import unittest
 from hypothesis import given
