@@ -379,22 +379,11 @@ def random_entrance(new_grid):
 	return (xray,yray,symbol)
 
 def convert_ray(entry_ray,grid):
-	#print(entry_ray[0],entry_ray[1])
-	#print(grid.width,grid.height)
-	if entry_ray[0] == 0:
-		return ">" + int_to_letter[entry_ray[1]-2]
-	elif entry_ray[0] >= grid.width+2:
-		return "<" + int_to_letter[entry_ray[1]-2]
-	elif entry_ray[1] == 0:
-		return "v" + int_to_letter[entry_ray[0]-2]
-	elif entry_ray[1]>= grid.height+2:
-		return "^" + int_to_letter[entry_ray[0]-2]
-
-
-
-
-
-
+	if entry_ray[2] == ">" or entry_ray[2] == "<":
+		return entry_ray[2] + int_to_letter[entry_ray[1] - 2]
+	elif entry_ray[2] == "^" or entry_ray[2] == "v":
+		return entry_ray[2] + int_to_letter[entry_ray[0] - 2]
+		
 
 import unittest
 from hypothesis import given

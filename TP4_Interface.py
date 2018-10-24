@@ -25,6 +25,7 @@ class window_app():
 		#layout.addWidget (timer,0,0)
 		layout_elements = dict()
 		button_elements = dict()
+		empty_elements = dict()
 		for x in range(2,2+grid.width):
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
@@ -49,16 +50,29 @@ class window_app():
 		for x in range(2,2+grid.width):
 			for y in range(2,2+grid.height):
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
+				empty_elements[x,y] = QLabel()
+				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
+
+
+		#input to give time to try to see matrix before reseting
+		x = input("Go on?")
+		#Erase mirrors and add entryray position
+		
 		for x in range(2,2+grid.width):
 			layout_elements[x,0].setText("")
 			layout_elements[x,4+grid.height].setText("")
 		for y in range(2,2+grid.height):
 			layout_elements[0,y].setText("")
 			layout_elements[4+grid.width,y].setText("")
+		for x in range(2,2+grid.width):
+			for y in range(2,2+grid.height):
+				layout.addWidget (empty_elements[x,y],y,x)
 		#print(entryray[0],entryray[1])
+
 		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
 
 		sys.exit(app.exec_())
+
 class buttom_app(QPushButton):
 	def __init__(self,x,y,desc):
 		self._x=x
