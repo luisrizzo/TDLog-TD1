@@ -302,6 +302,41 @@ def build_interactively():
 		other_holes = holes[:idx] + holes[idx+1:]
 		transporters.append((x, y, Transporter(other_holes)))
 	return Box(width, height, mirrors + transporters)
+	
+def build_automaticaly():
+	width = random.randint(3,26)
+	height = random.randint(3,26)
+	mirror_kinds=[
+		ForwardSlashMirror(),
+		BackSlashMirror(),
+		HorizontalMirror(),
+		VerticalMirror(),
+		SquareMirror()
+		]
+	mirrors = []
+	holes = []
+	transporters = []
+	nb_elements = random.randint(1,(width * height)//2)
+	nb_mirror = random.randint(1,nb_elements)
+	while len(mirrors)!=nb_mirror:
+		x = random.randint(0,width)
+		y = random.randint(0,height)
+		mirror_obj = random.choice(mirror_kinds)
+		repetition = False
+		for i in range(len(mirrors)):
+			if mirrors[i][0] == x and mirrors[i][1]==y : repetition = True
+		if not(repetition): mirrors.append((x,y,mirror_obj))
+	while len(holes) != (nb_elements - nb_mirror):
+		x = random.randint(0,width)
+		y = random.randint(0,height)
+		for (oldx,oldy) in holes:
+			if x == oldx and y == oldy:
+				repetition = True
+		if not(repetition):holes.append((x,y))
+	for idx, (x, y) in enumerate(holes):
+		other_holes = holes[:idx] + holes[idx+1:]
+		transporters.append((x, y, Transporter(other_holes)))
+	return Box(width, height, mirrors + transporters)
 
 import unittest
 from hypothesis import given

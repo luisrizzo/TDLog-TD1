@@ -14,14 +14,22 @@ class window_app():
 		button_elements = dict()
 		for x in range(2,2+grid.width):
 			layout_elements[x,0] = QLabel("?")
+			layout_elements[x,0].resize(64,64)
 			layout_elements[x,4+grid.height] = QLabel("?")
+			layout_elements[x,4+grid.height].resize(64,64)
 			button_elements[x,1] = QPushButton("^")
+			button_elements[x,1].resize(64,64)
 			button_elements[x,3+grid.height] = QPushButton("v")
+			button_elements[x,3+grid.height].resize(64,64)
 		for y in range(2,2+grid.height):
 			layout_elements[0,y] = QLabel("?")
+			layout_elements[0,y].resize(64,64)
 			layout_elements[4+grid.width,y] = QLabel("?")
+			layout_elements[4+grid.width,y].resize(64,64)
 			button_elements[1,y] = QPushButton("<")
+			button_elements[1,y].resize(64,64)
 			button_elements[3+grid.width,y] = QPushButton(">")
+			button_elements[3+grid.width,y].resize(64,64)
 			
 		for x in range(2,2+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
