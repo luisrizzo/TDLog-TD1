@@ -4,25 +4,39 @@ import sys
 from PyQt4.QtGui import *
 import random
 
-#new_grid, entry = TP4_base.box_and_entry_point()
-
 new_grid = TP4_base.build_automaticaly()
-#print(new_grid)
-print("Grid Generated")
-
 entry_ray = TP4_base.random_entrance(new_grid)
-print("Entry Ray Generated")
 
-print("Launching Interface")
-TP4_Interface.window_app(new_grid,entry_ray)
+#new_grid, entry = TP4_base.box_and_entry_point()
+def simulate_exits():
+	global entry_ray
+	global new_grid
+	print(entry_ray)
+	string_entry_ray = TP4_base.convert_ray(entry_ray,new_grid)
+	print(string_entry_ray)
+	exits = new_grid.get_exits(string_entry_ray)
+	return exits
 
+def main():
+	global entry_ray
+	global new_grid
+	#print(new_grid)
+	print("Grid Generated")
+	print("Entry Ray Generated")
 
-print("Simulating grid")
-entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
-exits = new_grid.get_exits(entry_ray)
+	print("Launching Interface")
+	user_answer = TP4_Interface.window_app(new_grid,entry_ray)
+	print("User answer is ", user_answer)
 
-print("Comparing results")
-print(exits)
+	print("Simulating grid")
+	string_entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
+	exits = new_grid.get_exits(string_entry_ray)
+
+	print("Comparing results")
+	print(exits)
+
+if __name__ == '__main__':
+	main()
 
 #sys.exit(app.exec_())
 

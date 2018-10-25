@@ -3,10 +3,10 @@ from PyQt4.QtGui import *
 
 app = QApplication(sys.argv)
 
-class Example(QWidget):
+class Dialog(QWidget):
     
     def __init__(self):
-        super(Example, self).__init__()
+        super(Dialog, self).__init__()
         
         self.initUI()
         
@@ -31,5 +31,5 @@ class Example(QWidget):
         if ok:
             self.le.setText(str(text))
 
-ex = Example()
+ex = Dialog()
 sys.exit(app.exec_())

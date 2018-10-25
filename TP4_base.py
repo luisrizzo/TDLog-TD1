@@ -213,6 +213,7 @@ class Box:
 	def __str__(self):
 		return self.string_with_trace()
 	def _particle_of_string(self, description):
+		print(description)
 		assert (len(description) == 2)
 		direction, letter = description
 		assert (letter in string.ascii_uppercase)
@@ -380,9 +381,9 @@ def random_entrance(new_grid):
 
 def convert_ray(entry_ray,grid):
 	if entry_ray[2] == ">" or entry_ray[2] == "<":
-		return entry_ray[2] + int_to_letter[entry_ray[1] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[1] - 2]
 	elif entry_ray[2] == "^" or entry_ray[2] == "v":
-		return entry_ray[2] + int_to_letter[entry_ray[0] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[0] - 2]
 		
 
 import unittest
