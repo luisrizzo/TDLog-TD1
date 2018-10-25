@@ -4,32 +4,21 @@ import TP4_base
 import TP4_Main
 import time
 import random
+import string
 
-
-answer = None
-class Clock(QLCDNumber):
-	def __init__(self):
-		super(Clock,self).__init__()
-		self.timer = QTimer()
-		self.timer.timeout.connect(self._update)
-		self.timer.start(1000)
-	def _update(self):
-		time = QTimer.currentTime().toString()
-		self.displayTime()
+int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
+							  string.ascii_uppercase))
+int_to_letter = { int:letter for (int, letter) in int_letter_couples }
+letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 
 class window_app():
 	def __init__(self,grid,entryray):
-		self._width = grid.width
-		self._height = grid.height
-
 		app = QApplication(sys.argv)
 		window = QWidget()
 		window.setWindowTitle("Ray Game")
 		window.show()
 		window.resize((grid.height+4) * 64 , (grid.width+4) * 64)
 		layout = QGridLayout(window)
-		#timer = Clock()
-		#layout.addWidget (timer,0,0)
 		layout_elements = dict()
 		button_elements = dict()
 		empty_elements = dict()
@@ -37,13 +26,13 @@ class window_app():
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
 			#button_elements[x,1] = buttom_app(x,1,"^")
-			button_elements[x,1] = button(x, 1, "^")
-			button_elements[x,3+grid.height] = button(x, 3+grid.height, "v")
+			button_elements[x,1] = button(x, 1, "^",grid)
+			button_elements[x,3+grid.height] = button(x, 3+grid.height, "v",grid)
 		for y in range(2,2+grid.height):
 			layout_elements[0,y] = QLabel("?")
 			layout_elements[4+grid.width,y] = QLabel("?")
-			button_elements[1,y] = button(1, y, "<")
-			button_elements[3+grid.width,y] = button(3+grid.width, y, ">")
+			button_elements[1,y] = button(1, y, "<",grid)
+			button_elements[3+grid.width,y] = button(3+grid.width, y, ">",grid)
 		for x in range(2,2+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
 			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
@@ -79,21 +68,14 @@ class window_app():
 		#while answer == None:
 		#	pass
 		sys.exit(app.exec_())
-
-	#@property
-	def width(self):
-		return self._width
-
-	#@property
-	def height(self):
-		return self._height
-	
 	
 
 class button(QWidget):
-	def __init__(self,x,y,desc):
+	def __init__(self,x,y,desc,grid):
 		self._x=x
 		self._y=y
+		self._width = grid.width
+		self._height= grid.height
 		super(button,self).__init__()
 		self._btn = QPushButton(desc, self)
 
@@ -104,14 +86,14 @@ class button(QWidget):
 		self.btn.clicked.connect(self.coordinates)
 
 	def string_of_exit(self):
-		print(window_app.width)
-		if self._x == 0:
+		print(self._x, self._y)
+		if self._x == 1:
 			exit=str(int_to_letter[self.y]+">")
-		elif self._x == window_app.width()+3:
+		elif self._x == self._width+3:
 			exit=str(int_to_letter[self.y]+"<")
-		elif self._y == 0:
+		elif self._y == 1:
 			exit=str(int_to_letter[self.x]+"v")
-		elif self._y == window_app.height()+3:
+		elif self._y == self._height+3:
 			exit=str(int_to_letter[self.x]+"^")
 		return exit
 
@@ -127,9 +109,6 @@ class button(QWidget):
 				print("yes")
 			else:
 				print("no")
-
-	
-
 	@property
 	def btn(self):
 		return self._btn

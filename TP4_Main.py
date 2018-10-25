@@ -11,9 +11,9 @@ entry_ray = TP4_base.random_entrance(new_grid)
 def simulate_exits():
 	global entry_ray
 	global new_grid
-	print(entry_ray)
+	#print(entry_ray)
 	string_entry_ray = TP4_base.convert_ray(entry_ray,new_grid)
-	print(string_entry_ray)
+	#print(string_entry_ray)
 	exits = new_grid.get_exits(string_entry_ray)
 	return exits
 

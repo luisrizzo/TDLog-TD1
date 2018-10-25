@@ -213,7 +213,7 @@ class Box:
 	def __str__(self):
 		return self.string_with_trace()
 	def _particle_of_string(self, description):
-		print(description)
+		#print(description)
 		assert (len(description) == 2)
 		direction, letter = description
 		assert (letter in string.ascii_uppercase)
@@ -381,9 +381,9 @@ def random_entrance(new_grid):
 
 def convert_ray(entry_ray,grid):
 	if entry_ray[2] == ">" or entry_ray[2] == "<":
-		return str(entry_ray[2]) + int_to_letter[entry_ray[1] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[1] - 3]
 	elif entry_ray[2] == "^" or entry_ray[2] == "v":
-		return str(entry_ray[2]) + int_to_letter[entry_ray[0] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[0] - 3]
 		
 
 import unittest
@@ -513,7 +513,7 @@ def box_and_entry_point(draw):
 		y = draw(gen_y)
 		holes.append((x,y))
 		number = draw(strats.integers(min_value = 2, max_value = max_mirrors - len(mirrors)))
-		print(numbers)
+		#print(numbers)
 		while len(holes) != number :
 			newx = draw(gen_x)
 			newy = draw(gen_y)
