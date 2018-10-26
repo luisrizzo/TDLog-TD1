@@ -22,6 +22,7 @@ class window_app():
 		layout_elements = dict()
 		button_elements = dict()
 		empty_elements = dict()
+
 		for x in range(2,2+grid.width):
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
@@ -43,6 +44,9 @@ class window_app():
 			layout.addWidget (layout_elements[4+grid.width,y],y,4+grid.width)
 			layout.addWidget (button_elements[1,y].btn,y,1)
 			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
+
+		#self.showGame()
+
 		for x in range(2,2+grid.width):
 			for y in range(2,2+grid.height):
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
@@ -60,15 +64,22 @@ class window_app():
 		for y in range(2,2+grid.height):
 			layout_elements[0,y].setText("")
 			layout_elements[4+grid.width,y].setText("")
+		'''
 		for x in range(2,2+grid.width):
 			for y in range(2,2+grid.height):
 				layout.addWidget (empty_elements[x,y],y,x)
-		#print(entryray[0],entryray[1])
+		'''
 		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
-		#while answer == None:
-		#	pass
 		sys.exit(app.exec_())
-	
+
+	def showGame (self):
+		msg = QMessageBox()
+		msg.setIcon(QMessageBox.Information)
+		msg.setText("So you want to play a game. Watch carefully the object positions")
+		msg.setInformativeText("The mirrors are going to be erased and a ray direction will be showed")
+		msg.setWindowTitle("Let the games begin")
+		msg.setDetailedText("Game Explanations")
+		msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)	
 
 class button(QWidget):
 	def __init__(self,x,y,desc,grid):
