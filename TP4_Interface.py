@@ -11,75 +11,14 @@ int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 
-class window_app():
-	def __init__(self,grid,entryray):
-		app = QApplication(sys.argv)
-		window = QWidget()
-		window.setWindowTitle("Ray Game")
-		window.show()
-		window.resize((grid.height+4) * 64 , (grid.width+4) * 64)
-		layout = QGridLayout(window)
-		layout_elements = dict()
-		button_elements = dict()
-		empty_elements = dict()
-
-		for x in range(2,2+grid.width):
-			layout_elements[x,0] = QLabel("?")
-			layout_elements[x,4+grid.height] = QLabel("?")
-			#button_elements[x,1] = buttom_app(x,1,"^")
-			button_elements[x,1] = button(x, 1, "^",grid)
-			button_elements[x,3+grid.height] = button(x, 3+grid.height, "v",grid)
-		for y in range(2,2+grid.height):
-			layout_elements[0,y] = QLabel("?")
-			layout_elements[4+grid.width,y] = QLabel("?")
-			button_elements[1,y] = button(1, y, "<",grid)
-			button_elements[3+grid.width,y] = button(3+grid.width, y, ">",grid)
-		for x in range(2,2+grid.width):
-			layout.addWidget (layout_elements[x,0],0,x)
-			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
-			layout.addWidget (button_elements[x,1].btn,1,x)
-			layout.addWidget (button_elements[x,3+grid.height].btn,3+grid.height,x)
-		for y in range(2,2+grid.height):
-			layout.addWidget (layout_elements[0,y],y,0)
-			layout.addWidget (layout_elements[4+grid.width,y],y,4+grid.width)
-			layout.addWidget (button_elements[1,y].btn,y,1)
-			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
-
-		#self.showGame()
-
-		for x in range(2,2+grid.width):
-			for y in range(2,2+grid.height):
-				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
-				empty_elements[x,y] = QLabel()
-				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
-
-
-		#input to give time to try to see matrix before reseting
-		#x = input("Go on?")
-		#Erase mirrors and add entryray position
-		
-		for x in range(2,2+grid.width):
-			layout_elements[x,0].setText("")
-			layout_elements[x,4+grid.height].setText("")
-		for y in range(2,2+grid.height):
-			layout_elements[0,y].setText("")
-			layout_elements[4+grid.width,y].setText("")
-		'''
-		for x in range(2,2+grid.width):
-			for y in range(2,2+grid.height):
-				layout.addWidget (empty_elements[x,y],y,x)
-		'''
-		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
-		sys.exit(app.exec_())
-
-	def showGame (self):
-		msg = QMessageBox()
-		msg.setIcon(QMessageBox.Information)
-		msg.setText("So you want to play a game. Watch carefully the object positions")
-		msg.setInformativeText("The mirrors are going to be erased and a ray direction will be showed")
-		msg.setWindowTitle("Let the games begin")
-		msg.setDetailedText("Game Explanations")
-		msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)	
+def showGame ():
+	msg = QMessageBox()
+	msg.setIcon(QMessageBox.Information)
+	msg.setText("So you want to play a game. Watch carefully the object positions")
+	msg.setInformativeText("The mirrors are going to be erased and a ray direction will be showed")
+	msg.setWindowTitle("Let the games begin")
+	msg.setDetailedText("Game Explanations")
+	msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)	
 
 class button(QWidget):
 	def __init__(self,x,y,desc,grid):
@@ -133,6 +72,76 @@ class button(QWidget):
 	@property
 	def btn(self):
 		return self._btn
+
+class window_app():
+	def __init__(self,grid,entryray):
+		app = QApplication(sys.argv)
+		window = QWidget()
+		window.setWindowTitle("Ray Game")
+		window.show()
+		window.resize((grid.height+4) * 64 , (grid.width+4) * 64)
+		layout = QGridLayout(window)
+		layout_elements = dict()
+		button_elements = dict()
+		empty_elements = dict()
+
+		for x in range(2,2+grid.width):
+			layout_elements[x,0] = QLabel("?")
+			layout_elements[x,4+grid.height] = QLabel("?")
+			#button_elements[x,1] = buttom_app(x,1,"^")
+			button_elements[x,1] = button(x, 1, "^",grid)
+			button_elements[x,3+grid.height] = button(x, 3+grid.height, "v",grid)
+		for y in range(2,2+grid.height):
+			layout_elements[0,y] = QLabel("?")
+			layout_elements[4+grid.width,y] = QLabel("?")
+			button_elements[1,y] = button(1, y, "<",grid)
+			button_elements[3+grid.width,y] = button(3+grid.width, y, ">",grid)
+		for x in range(2,2+grid.width):
+			layout.addWidget (layout_elements[x,0],0,x)
+			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
+			layout.addWidget (button_elements[x,1].btn,1,x)
+			layout.addWidget (button_elements[x,3+grid.height].btn,3+grid.height,x)
+		for y in range(2,2+grid.height):
+			layout.addWidget (layout_elements[0,y],y,0)
+			layout.addWidget (layout_elements[4+grid.width,y],y,4+grid.width)
+			layout.addWidget (button_elements[1,y].btn,y,1)
+			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
+		for x in range(2,2+grid.width):
+			for y in range(2,2+grid.height):
+				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
+				empty_elements[x,y] = QLabel()
+				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
+		w = QWidget()
+		b = QPushButton(w)
+		b.setText("Start Game")
+		b.move(50,50)
+		b.clicked.connect(showGame())
+		w.show()
+		sys.exit(app.exec_())
+
+
+	def startGame(self):
+		#input to give time to try to see matrix before reseting
+		#x = input("Go on?")
+		#Erase mirrors and add entryray position
+		
+		for x in range(2,2+grid.width):
+			layout_elements[x,0].setText("")
+			layout_elements[x,4+grid.height].setText("")
+		for y in range(2,2+grid.height):
+			layout_elements[0,y].setText("")
+			layout_elements[4+grid.width,y].setText("")
+		'''
+		for x in range(2,2+grid.width):
+			for y in range(2,2+grid.height):
+				layout.addWidget (empty_elements[x,y],y,x)
+		'''
+		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
+		sys.exit(app.exec_())
+
+
+
+
 	
 
 
