@@ -5,11 +5,13 @@ import TP4_Main
 import time
 import random
 import string
+from PyQt4.QtCore import QTimer
 
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 							  string.ascii_uppercase))
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
+ticking = 0
 
 def showGame ():
 	msg = QMessageBox()
@@ -72,6 +74,12 @@ class button(QWidget):
 	@property
 	def btn(self):
 		return self._btn
+def tick():
+	global ticking
+	ticking +=1
+	if ticking == 5:
+		print("Start Game")
+		startGame()
 
 class window_app():
 	def __init__(self,grid,entryray):
@@ -80,6 +88,9 @@ class window_app():
 		window.setWindowTitle("Ray Game")
 		window.show()
 		window.resize((grid.height+4) * 64 , (grid.width+4) * 64)
+		timer = QTimer()
+		timer.timeout.connect(tick)
+		timer.start(1000)
 		layout = QGridLayout(window)
 		layout_elements = dict()
 		button_elements = dict()
@@ -111,33 +122,27 @@ class window_app():
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
 				empty_elements[x,y] = QLabel()
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
-		w = QWidget()
-		b = QPushButton(w)
-		b.setText("Start Game")
-		b.move(50,50)
-		b.clicked.connect(showGame())
-		w.show()
 		sys.exit(app.exec_())
 
 
-	def startGame(self):
-		#input to give time to try to see matrix before reseting
-		#x = input("Go on?")
-		#Erase mirrors and add entryray position
-		
-		for x in range(2,2+grid.width):
-			layout_elements[x,0].setText("")
-			layout_elements[x,4+grid.height].setText("")
+def startGame():
+	#input to give time to try to see matrix before reseting
+	#x = input("Go on?")
+	#Erase mirrors and add entryray position
+	
+	for x in range(2,2+grid.width):
+		layout_elements[x,0].setText("")
+		layout_elements[x,4+grid.height].setText("")
+	for y in range(2,2+grid.height):
+		layout_elements[0,y].setText("")
+		layout_elements[4+grid.width,y].setText("")
+	'''
+	for x in range(2,2+grid.width):
 		for y in range(2,2+grid.height):
-			layout_elements[0,y].setText("")
-			layout_elements[4+grid.width,y].setText("")
-		'''
-		for x in range(2,2+grid.width):
-			for y in range(2,2+grid.height):
-				layout.addWidget (empty_elements[x,y],y,x)
-		'''
-		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
-		sys.exit(app.exec_())
+			layout.addWidget (empty_elements[x,y],y,x)
+	'''
+	layout_elements[entryray[0],entryray[1]].setText(entryray[2])
+	sys.exit(app.exec_())
 
 
 
