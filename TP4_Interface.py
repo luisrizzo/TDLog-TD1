@@ -74,12 +74,17 @@ class button(QWidget):
 	@property
 	def btn(self):
 		return self._btn
+
+#action every 1 second for the timer
 def tick():
 	global ticking
 	ticking +=1
 	if ticking == 5:
 		print("Start Game")
-		startGame()
+		#startGame()
+	elif ticking == 15 :
+		print("You are taking too long to answer")
+		ticking = 6
 
 class window_app():
 	def __init__(self,grid,entryray):
@@ -100,13 +105,13 @@ class window_app():
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
 			#button_elements[x,1] = buttom_app(x,1,"^")
-			button_elements[x,1] = button(x, 1, "^",grid)
-			button_elements[x,3+grid.height] = button(x, 3+grid.height, "v",grid)
+			button_elements[x,1] = button(x-1, 0, "^",grid)
+			button_elements[x,3+grid.height] = button(x-1, grid.height+1, "v",grid)
 		for y in range(2,2+grid.height):
 			layout_elements[0,y] = QLabel("?")
 			layout_elements[4+grid.width,y] = QLabel("?")
-			button_elements[1,y] = button(1, y, "<",grid)
-			button_elements[3+grid.width,y] = button(3+grid.width, y, ">",grid)
+			button_elements[1,y] = button(0, y-1, "<",grid)
+			button_elements[3+grid.width,y] = button(grid.width+1, y-1, ">",grid)
 		for x in range(2,2+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
 			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
@@ -122,6 +127,14 @@ class window_app():
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
 				empty_elements[x,y] = QLabel()
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
+		global ticking
+		for x in range(2,2+grid.width):
+			layout_elements[x,0].setText("")
+			layout_elements[x,4+grid.height].setText("")
+		for y in range(2,2+grid.height):
+			layout_elements[0,y].setText("")
+			layout_elements[4+grid.width,y].setText("")
+		layout_elements[entryray[0],entryray[1]].setText(entryray[2])
 		sys.exit(app.exec_())
 
 
@@ -136,12 +149,12 @@ def startGame():
 	for y in range(2,2+grid.height):
 		layout_elements[0,y].setText("")
 		layout_elements[4+grid.width,y].setText("")
-	'''
+	layout_elements[entryray[0],entryray[1]].setText(entryray[2])
+	
 	for x in range(2,2+grid.width):
 		for y in range(2,2+grid.height):
 			layout.addWidget (empty_elements[x,y],y,x)
-	'''
-	layout_elements[entryray[0],entryray[1]].setText(entryray[2])
+	
 	sys.exit(app.exec_())
 
 

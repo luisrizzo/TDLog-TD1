@@ -25,16 +25,9 @@ def main():
 	print("Entry Ray Generated")
 
 	print("Launching Interface")
+	print(new_grid)
 	user_answer = TP4_Interface.window_app(new_grid,entry_ray)
-	print("User answer is ", user_answer)
-
-	print("Simulating grid")
-	string_entry_ray = (TP4_base.convert_ray(entry_ray,new_grid))
-	exits = new_grid.get_exits(string_entry_ray)
-
-	print("Comparing results")
-	print(exits)
-
+	
 if __name__ == '__main__':
 	main()
 
