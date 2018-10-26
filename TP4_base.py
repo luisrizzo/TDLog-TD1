@@ -333,7 +333,7 @@ def build_automaticaly():
 	mirrors = []
 	holes = []
 	transporters = []
-	nb_elements = random.randint(1,(width * height)//2)
+	nb_elements = random.randint(1,(width * height)//4)
 	nb_mirror = random.randint(1,nb_elements)
 	#prints used to verify numbers
 	#print(nb_elements)
@@ -381,9 +381,9 @@ def random_entrance(new_grid):
 
 def convert_ray(entry_ray,grid):
 	if entry_ray[2] == ">" or entry_ray[2] == "<":
-		return str(entry_ray[2]) + int_to_letter[entry_ray[1] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[1]]
 	elif entry_ray[2] == "^" or entry_ray[2] == "v":
-		return str(entry_ray[2]) + int_to_letter[entry_ray[0] - 2]
+		return str(entry_ray[2]) + int_to_letter[entry_ray[0]]
 		
 
 import unittest
