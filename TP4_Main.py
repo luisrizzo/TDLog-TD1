@@ -14,7 +14,6 @@ ticking = 0
 
 new_grid = TP4_base.build_automaticaly()
 entry_ray = TP4_base.random_entrance(new_grid)
-print("1:", entry_ray)
 
 def showGame ():
 	msg = QMessageBox()
@@ -170,9 +169,7 @@ def startGame():
 def simulate_exits():
 	global entry_ray
 	global new_grid
-	print("2:", entry_ray)
 	string_entry_ray = TP4_base.convert_ray(entry_ray,new_grid)
-	print("3:",string_entry_ray)
 	exits = new_grid.get_exits(string_entry_ray)
 	return exits
 
