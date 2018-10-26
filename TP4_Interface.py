@@ -83,7 +83,7 @@ class button(QWidget):
 
 	def initUI(self):
 		self.btn.move(20, 20)
-		self.btn.clicked.connect(self.coordinates)
+		self.btn.clicked.connect(self.showdialog)
 
 	def string_of_exit(self):
 		print(self._x, self._y)
@@ -97,18 +97,28 @@ class button(QWidget):
 			exit=str(int_to_letter[self.x]+"^")
 		return exit
 
-	def coordinates(self):
+	def showdialog(self):
 		#global answer
 		answer_coord = (self._x, self._y)
 		exits = TP4_Main.simulate_exits()
-		answer = self.string_of_exit()
+		#answer = self.string_of_exit()
+		msg = QMessageBox()
+		msg.setIcon(QMessageBox.Information)
+		msg.setText("So you answered the game")
+		msg.setInformativeText("And your answer was " + str(self._x) + ","+ str(self._y))
+		msg.setWindowTitle("Game Over")
+		msg.setDetailedText("The correct answers are: " + str(exits))
 		#string_entry_ray = (TP4_base.convert_ray(window_app.entryray, window_app.grid))
 		#exits = new_grid.get_exits(string_entry_ray)
-		for exit in exits:
-			if exit==answer:
-				print("yes")
-			else:
-				print("no")
+		#for exit in exits:
+		#	if exit==answer:
+		#		print("yes")
+		#	else:
+		#		print("no")
+
+
+		retval = msg.exec_()
+		print ("value of pressed message box button:", retval)
 	@property
 	def btn(self):
 		return self._btn
