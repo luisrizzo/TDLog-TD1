@@ -109,7 +109,6 @@ def tick():
 			layout_elements[entry_ray[0]+2,entry_ray[1]+1].setText(entry_ray[2])
 		for x in range(2,2+new_grid.width):
 			for y in range (2,2+new_grid.height):
-				empty_elements[x,y] = QLabel()
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
 		#startGame()
 	elif ticking == 25 :
@@ -174,8 +173,6 @@ def simulate_exits():
 def main():
 	global entry_ray
 	global new_grid
-	#print(new_grid)
-	#print(new_grid.width,new_grid.height)
 	user_answer = window_app(new_grid,entry_ray)
 	
 if __name__ == '__main__':
