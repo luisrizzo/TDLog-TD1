@@ -1,6 +1,6 @@
  #Ecole Nationale des Ponts et Chaussées
 #Techniques de Développement Logiciel
-#TP 4
+#TP 4 - fichier complémentaire
 #Fait par Luis Augusto YOKOTA RIZZO
 #      et Daniel Toshihiro OKANE
 #!/usr/bin/env python
@@ -320,7 +320,9 @@ def build_interactively():
 		other_holes = holes[:idx] + holes[idx+1:]
 		transporters.append((x, y, Transporter(other_holes)))
 	return Box(width, height, mirrors + transporters)
-	
+#new function added after the TP3
+#Similar logic from the test functions but that returns the new grid so that the rest
+#of the program can run normally	
 def build_automaticaly():
 	width = random.randint(3,26)
 	height = random.randint(3,26)
@@ -336,10 +338,9 @@ def build_automaticaly():
 	transporters = []
 	nb_elements = random.randint(1,(width * height)//4)
 	nb_mirror = random.randint(1,nb_elements)
+	#6 was a parameter test to reduce what was sometimes a really large quantity of transporters
+	#can be elimitated without any impact on other functions
 	nb_transp = min((nb_elements - nb_mirror),6)
-	#prints used to verify numbers
-	#print(nb_elements)
-	#print (nb_mirror)
 	while len(mirrors)!=nb_mirror:
 		x = random.randint(0,width)
 		y = random.randint(0,height)
@@ -361,6 +362,8 @@ def build_automaticaly():
 			other_holes = holes[:idx] + holes[idx+1:]
 			transporters.append((x, y, Transporter(other_holes)))
 	return Box(width, height, mirrors + transporters)
+
+#création d'un rayon d'entrée qui doit etre dans les dimensions qui respectent la grid crée avant
 def random_entrance(new_grid):
 	if bool(random.getrandbits(1)):
 		#code pour entré de ray vertical

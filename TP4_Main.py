@@ -1,3 +1,10 @@
+ #Ecole Nationale des Ponts et Chaussées
+#Techniques de Développement Logiciel
+#TP 4 - fichier de base
+#Fait par Luis Augusto YOKOTA RIZZO
+#      et Daniel Toshihiro OKANE
+#!/usr/bin/env python
+
 import TP4_base
 import sys
 from PyQt4.QtGui import *
@@ -6,6 +13,7 @@ import string
 import time
 from PyQt4.QtCore import QTimer
 
+#Global variables used in most of the functions
 int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 							  string.ascii_uppercase))
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
@@ -18,6 +26,7 @@ layout_elements = dict()
 button_elements = dict()
 empty_elements = dict()
 
+#class to make similar work as of string_of_particle from the Box class in TP4_Base
 def string_of_particle_interface(width,height,x,y):
 	if x < 0:
 		return "<" + int_to_letter[y]
@@ -27,15 +36,6 @@ def string_of_particle_interface(width,height,x,y):
 		return "^" + int_to_letter[x]
 	elif y >= height :
 		return "v" + int_to_letter[x]
-
-def showGame ():
-	msg = QMessageBox()
-	msg.setIcon(QMessageBox.Information)
-	msg.setText("So you want to play a game. Watch carefully the object positions")
-	msg.setInformativeText("The mirrors are going to be erased and a ray direction will be showed")
-	msg.setWindowTitle("Let the games begin")
-	msg.setDetailedText("Game Explanations")
-	msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)	
 
 class button(QWidget):
 	def __init__(self,x,y,desc,grid):
@@ -76,22 +76,52 @@ class button(QWidget):
 		return self._btn
 
 #action every 1 second for the timer
+#used for explaining rules and starting the game
 def tick():
 	global trying
 	global ticking
+	global layout_elements
+	global entry_ray
+	global new_grid
+	global empty_elements
 	if trying: ticking +=1
 	if ticking == 5:
-		print("Start Game")
+		newmsg = QMessageBox()
+		newmsg.setText("Remember mirror positions")
+		retval = newmsg.exec_()
+	elif ticking == 15:
+		newmsg = QMessageBox()
+		newmsg.setText("Game starts. Watch the entry point of the ray")
+		retval = newmsg.exec_()
+		for x in range(2,2+new_grid.width):
+			layout_elements[x,0].setText("")
+			layout_elements[x,4+new_grid.height].setText("")
+		for y in range(2,2+new_grid.height):
+			layout_elements[0,y].setText("")
+			layout_elements[4+new_grid.width,y].setText("")
+		if entry_ray[0]== -1:
+			layout_elements[entry_ray[0]+1,entry_ray[1]+2].setText(entry_ray[2])
+		elif entry_ray[0] == new_grid.width:
+			layout_elements[entry_ray[0]+4,entry_ray[1]+2].setText(entry_ray[2])
+		elif entry_ray[1] == new_grid.height:
+			layout_elements[entry_ray[0]+2,entry_ray[1]+4].setText(entry_ray[2])
+		elif entry_ray[1]== -1:
+			layout_elements[entry_ray[0]+2,entry_ray[1]+1].setText(entry_ray[2])
+		for x in range(2,2+new_grid.width):
+			for y in range (2,2+new_grid.height):
+				empty_elements[x,y] = QLabel()
+				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
 		#startGame()
-	elif ticking == 15 :
+	elif ticking == 25 :
 		print("answer")
 		newmsg = QMessageBox()
 		newmsg.setText("You are taking too long to answer")
 		retval = newmsg.exec_()
-		ticking = 6
+		ticking = 16
 
+#fonction principal de l'interface graphique
 class window_app():
-	def __init__(self,grid,entryray):
+	def __init__(self,grid,entry_ray):
 		app = QApplication(sys.argv)
 		window = QWidget()
 		window.setWindowTitle("Ray Game")
@@ -127,49 +157,11 @@ class window_app():
 			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
 		for x in range(2,2+grid.width):
 			for y in range(2,2+grid.height):
-				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
-				empty_elements[x,y] = QLabel()
-				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
-		global ticking
+				empty_elements[x,y] = grid[x-2,y-2].img_repr()
 		for x in range(2,2+grid.width):
-			layout_elements[x,0].setText("")
-			layout_elements[x,4+grid.height].setText("")
-		for y in range(2,2+grid.height):
-			layout_elements[0,y].setText("")
-			layout_elements[4+grid.width,y].setText("")
-
-		if entryray[0]== -1:
-			layout_elements[entryray[0]+1,entryray[1]+2].setText(entryray[2])
-		elif entryray[0] == grid.width:
-			layout_elements[entryray[0]+4,entryray[1]+2].setText(entryray[2])
-		elif entryray[1] == grid.height:
-			layout_elements[entryray[0]+2,entryray[1]+4].setText(entryray[2])
-		elif entryray[1]== -1:
-			layout_elements[entryray[0]+2,entryray[1]+1].setText(entryray[2])
+			for y in range(2,2+grid.height):
+				layout.addWidget (empty_elements[x,y],y,x)
 		sys.exit(app.exec_())
-
-
-def startGame():
-	#input to give time to try to see matrix before reseting
-	#x = input("Go on?")
-	#Erase mirrors and add entryray position
-	
-	for x in range(2,2+grid.width):
-		layout_elements[x,0].setText("")
-		layout_elements[x,4+grid.height].setText("")
-	for y in range(2,2+grid.height):
-		layout_elements[0,y].setText("")
-		layout_elements[4+grid.width,y].setText("")
-	if entryray[0]==0:
-		layout_elements[entryray[0],entryray[1]+2].setText(entryray[2])
-	elif entryray[1]==0:
-		layout_elements[entryray[0]+2,entryray[1]].setText(entryray[2])
-	
-	for x in range(2,2+grid.width):
-		for y in range(2,2+grid.height):
-			layout.addWidget (empty_elements[x,y],y,x)
-	
-	sys.exit(app.exec_())
 
 #new_grid, entry = TP4_base.box_and_entry_point()
 def simulate_exits():
