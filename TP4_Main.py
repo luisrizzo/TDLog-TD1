@@ -14,6 +14,9 @@ ticking = 0
 trying = True
 new_grid = TP4_base.build_automaticaly()
 entry_ray = TP4_base.random_entrance(new_grid)
+layout_elements = dict()
+button_elements = dict()
+empty_elements = dict()
 
 def string_of_particle_interface(width,height,x,y):
 	if x < 0:
@@ -51,6 +54,8 @@ class button(QWidget):
 
 	def showdialog(self):
 		global new_grid
+		global trying
+		trying = False
 		answer_coord = (self._x, self._y)
 		exits = simulate_exits()
 		answer = string_of_particle_interface(new_grid.width,new_grid.height,self._x,self._y)
@@ -60,22 +65,12 @@ class button(QWidget):
 		msg = QMessageBox()
 		msg.setIcon(QMessageBox.Information)
 		msg.setText("So you answered the game")
-		#msg.setInformativeText("And your answer was " + str(self._x) + ","+ str(self._y))
 		if not(rightwrong): msg.setInformativeText("And your answer was wrong :" + answer)
 		else : msg.setInformativeText("And your answer was right! Congratulations")
 		msg.setWindowTitle("Game Over")
 		msg.setDetailedText("All the correct answers are: " + str(exits))
-		#string_entry_ray = (TP4_base.convert_ray(window_app.entryray, window_app.grid))
-		#exits = new_grid.get_exits(string_entry_ray)
-		#for exit in exits:
-		#	if exit==answer:
-		#		print("yes")
-		#	else:
-		#		print("no")
-
-
 		retval = msg.exec_()
-		print ("value of pressed message box button:", retval)
+
 	@property
 	def btn(self):
 		return self._btn
@@ -89,7 +84,10 @@ def tick():
 		print("Start Game")
 		#startGame()
 	elif ticking == 15 :
-		print("You are taking too long to answer")
+		print("answer")
+		newmsg = QMessageBox()
+		newmsg.setText("You are taking too long to answer")
+		retval = newmsg.exec_()
 		ticking = 6
 
 class window_app():
@@ -103,41 +101,40 @@ class window_app():
 		timer.timeout.connect(tick)
 		timer.start(1000)
 		layout = QGridLayout(window)
-		layout_elements = dict()
-		button_elements = dict()
-		empty_elements = dict()
-
-		for x in range(2,1+grid.width):
+		global layout_elements
+		global empty_elements
+		global button_elements
+		for x in range(2,2+grid.width):
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
 			#button_elements[x,1] = buttom_app(x,1,"^")
 			button_elements[x,1] = button(x-2, -1, "^",grid)
 			button_elements[x,3+grid.height] = button(x-2, grid.height, "v",grid)
-		for y in range(2,1+grid.height):
+		for y in range(2,2+grid.height):
 			layout_elements[0,y] = QLabel("?")
 			layout_elements[4+grid.width,y] = QLabel("?")
 			button_elements[1,y] = button(-1, y-2, "<",grid)
 			button_elements[3+grid.width,y] = button(grid.width, y-2, ">",grid)
-		for x in range(2,1+grid.width):
+		for x in range(2,2+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
 			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
 			layout.addWidget (button_elements[x,1].btn,1,x)
 			layout.addWidget (button_elements[x,3+grid.height].btn,3+grid.height,x)
-		for y in range(2,1+grid.height):
+		for y in range(2,2+grid.height):
 			layout.addWidget (layout_elements[0,y],y,0)
 			layout.addWidget (layout_elements[4+grid.width,y],y,4+grid.width)
 			layout.addWidget (button_elements[1,y].btn,y,1)
 			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
-		for x in range(2,1+grid.width):
-			for y in range(2,1+grid.height):
+		for x in range(2,2+grid.width):
+			for y in range(2,2+grid.height):
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
 				empty_elements[x,y] = QLabel()
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
 		global ticking
-		for x in range(2,1+grid.width):
+		for x in range(2,2+grid.width):
 			layout_elements[x,0].setText("")
 			layout_elements[x,4+grid.height].setText("")
-		for y in range(2,1+grid.height):
+		for y in range(2,2+grid.height):
 			layout_elements[0,y].setText("")
 			layout_elements[4+grid.width,y].setText("")
 
@@ -186,11 +183,7 @@ def main():
 	global entry_ray
 	global new_grid
 	#print(new_grid)
-	print("Grid Generated")
-	print("Entry Ray Generated")
-
-	print("Launching Interface")
-	print(new_grid.width,new_grid.height)
+	#print(new_grid.width,new_grid.height)
 	user_answer = window_app(new_grid,entry_ray)
 	
 if __name__ == '__main__':
