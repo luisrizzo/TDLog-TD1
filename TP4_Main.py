@@ -11,9 +11,19 @@ int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 ticking = 0
-
+trying = True
 new_grid = TP4_base.build_automaticaly()
 entry_ray = TP4_base.random_entrance(new_grid)
+
+def string_of_particle_interface(width,height,x,y):
+	if x < 0:
+		return "<" + int_to_letter[y]
+	elif x >= width :
+		return ">" + int_to_letter[y]
+	elif y < 0:
+		return "^" + int_to_letter[x]
+	elif y >= height :
+		return "v" + int_to_letter[x]
 
 def showGame ():
 	msg = QMessageBox()
@@ -39,29 +49,22 @@ class button(QWidget):
 		self.btn.move(20, 20)
 		self.btn.clicked.connect(self.showdialog)
 
-	def string_of_exit(self):
-		print(self._x, self._y)
-		if self._x == 1:
-			exit=str(int_to_letter[self.y-1]+">")
-		elif self._x == self._width+3:
-			exit=str(int_to_letter[self.y-1]+"<")
-		elif self._y == 1:
-			exit=str(int_to_letter[self.x-1]+"v")
-		elif self._y == self._height+3:
-			exit=str(int_to_letter[self.x-1]+"^")
-		return exit
-
 	def showdialog(self):
-		#global answer
+		global new_grid
 		answer_coord = (self._x, self._y)
 		exits = simulate_exits()
-		#answer = self.string_of_exit()
+		answer = string_of_particle_interface(new_grid.width,new_grid.height,self._x,self._y)
+		rightwrong = False
+		for i in exits:
+			if answer == i: rightwrong = True
 		msg = QMessageBox()
 		msg.setIcon(QMessageBox.Information)
 		msg.setText("So you answered the game")
-		msg.setInformativeText("And your answer was " + str(self._x) + ","+ str(self._y))
+		#msg.setInformativeText("And your answer was " + str(self._x) + ","+ str(self._y))
+		if not(rightwrong): msg.setInformativeText("And your answer was wrong :" + answer)
+		else : msg.setInformativeText("And your answer was right! Congratulations")
 		msg.setWindowTitle("Game Over")
-		msg.setDetailedText("The correct answers are: " + str(exits))
+		msg.setDetailedText("All the correct answers are: " + str(exits))
 		#string_entry_ray = (TP4_base.convert_ray(window_app.entryray, window_app.grid))
 		#exits = new_grid.get_exits(string_entry_ray)
 		#for exit in exits:
@@ -79,8 +82,9 @@ class button(QWidget):
 
 #action every 1 second for the timer
 def tick():
+	global trying
 	global ticking
-	ticking +=1
+	if trying: ticking +=1
 	if ticking == 5:
 		print("Start Game")
 		#startGame()
@@ -103,43 +107,48 @@ class window_app():
 		button_elements = dict()
 		empty_elements = dict()
 
-		for x in range(2,2+grid.width):
+		for x in range(2,1+grid.width):
 			layout_elements[x,0] = QLabel("?")
 			layout_elements[x,4+grid.height] = QLabel("?")
 			#button_elements[x,1] = buttom_app(x,1,"^")
-			button_elements[x,1] = button(x-1, 0, "^",grid)
-			button_elements[x,3+grid.height] = button(x-1, grid.height+1, "v",grid)
-		for y in range(2,2+grid.height):
+			button_elements[x,1] = button(x-2, -1, "^",grid)
+			button_elements[x,3+grid.height] = button(x-2, grid.height, "v",grid)
+		for y in range(2,1+grid.height):
 			layout_elements[0,y] = QLabel("?")
 			layout_elements[4+grid.width,y] = QLabel("?")
-			button_elements[1,y] = button(0, y-1, "<",grid)
-			button_elements[3+grid.width,y] = button(grid.width+1, y-1, ">",grid)
-		for x in range(2,2+grid.width):
+			button_elements[1,y] = button(-1, y-2, "<",grid)
+			button_elements[3+grid.width,y] = button(grid.width, y-2, ">",grid)
+		for x in range(2,1+grid.width):
 			layout.addWidget (layout_elements[x,0],0,x)
 			layout.addWidget (layout_elements[x,4+grid.height],4+grid.height,x)
 			layout.addWidget (button_elements[x,1].btn,1,x)
 			layout.addWidget (button_elements[x,3+grid.height].btn,3+grid.height,x)
-		for y in range(2,2+grid.height):
+		for y in range(2,1+grid.height):
 			layout.addWidget (layout_elements[0,y],y,0)
 			layout.addWidget (layout_elements[4+grid.width,y],y,4+grid.width)
 			layout.addWidget (button_elements[1,y].btn,y,1)
 			layout.addWidget (button_elements[3+grid.width,y].btn,y,3+grid.width)
-		for x in range(2,2+grid.width):
-			for y in range(2,2+grid.height):
+		for x in range(2,1+grid.width):
+			for y in range(2,1+grid.height):
 				layout.addWidget (grid[x-2,y-2].img_repr(),y,x)
 				empty_elements[x,y] = QLabel()
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
 		global ticking
-		for x in range(2,2+grid.width):
+		for x in range(2,1+grid.width):
 			layout_elements[x,0].setText("")
 			layout_elements[x,4+grid.height].setText("")
-		for y in range(2,2+grid.height):
+		for y in range(2,1+grid.height):
 			layout_elements[0,y].setText("")
 			layout_elements[4+grid.width,y].setText("")
-		if entryray[0]==0:
-			layout_elements[entryray[0],entryray[1]+2].setText(entryray[2])
-		elif entryray[1]==0:
-			layout_elements[entryray[0]+2,entryray[1]].setText(entryray[2])
+
+		if entryray[0]== -1:
+			layout_elements[entryray[0]+1,entryray[1]+2].setText(entryray[2])
+		elif entryray[0] == grid.width:
+			layout_elements[entryray[0]+3,entryray[1]+2].setText(entryray[2])
+		elif entryray[1] == grid.height:
+			layout_elements[entryray[0]+2,entryray[1]+3].setText(entryray[2])
+		elif entryray[1]== -1:
+			layout_elements[entryray[0]+2,entryray[1]+1].setText(entryray[2])
 		sys.exit(app.exec_())
 
 

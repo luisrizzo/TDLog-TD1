@@ -15,6 +15,7 @@ int_letter_couples = list(zip(range(0, len(string.ascii_uppercase)),
 int_to_letter = { int:letter for (int, letter) in int_letter_couples }
 letter_to_int = { letter:int for (int, letter) in int_letter_couples }
 
+
 class Particle:
 	def __init__(self, x, y, dx, dy):
 		assert (dx in {-1, 0, 1}) and (dy in {-1, 0, 1}), "invalid dx/dy"
@@ -335,6 +336,7 @@ def build_automaticaly():
 	transporters = []
 	nb_elements = random.randint(1,(width * height)//4)
 	nb_mirror = random.randint(1,nb_elements)
+	nb_transp = min((nb_elements - nb_mirror),6)
 	#prints used to verify numbers
 	#print(nb_elements)
 	#print (nb_mirror)
@@ -346,36 +348,37 @@ def build_automaticaly():
 		for i in range(len(mirrors)):
 			if mirrors[i][0] == x and mirrors[i][1]==y : repetition = True
 		if not(repetition): mirrors.append((x,y,mirror_obj))
-	while len(holes) != (nb_elements - nb_mirror):
-		x = random.randint(0,width)
-		y = random.randint(0,height)
-		repetition = False
-		for (oldx,oldy) in holes:
-			if x == oldx and y == oldy:
-				repetition = True
-		if not(repetition):holes.append((x,y))
-	for idx, (x, y) in enumerate(holes):
-		other_holes = holes[:idx] + holes[idx+1:]
-		transporters.append((x, y, Transporter(other_holes)))
+	if nb_transp>=2:
+		while len(holes) != nb_transp :
+			x = random.randint(0,width)
+			y = random.randint(0,height)
+			repetition = False
+			for (oldx,oldy) in holes:
+				if x == oldx and y == oldy:
+					repetition = True
+			if not(repetition):holes.append((x,y))
+		for idx, (x, y) in enumerate(holes):
+			other_holes = holes[:idx] + holes[idx+1:]
+			transporters.append((x, y, Transporter(other_holes)))
 	return Box(width, height, mirrors + transporters)
 def random_entrance(new_grid):
 	if bool(random.getrandbits(1)):
 		#code pour entré de ray vertical
-		xray = random.randint(2,2+new_grid.width)
+		xray = random.randint(0,new_grid.width-1)
 		if bool(random.getrandbits(1)):
-			yray = 0
+			yray = -1
 			symbol = "v"
 		else:
-			yray = 4 + new_grid.height
+			yray = new_grid.height
 			symbol = "^"
 	else:
 		#code pour entré de ray horizontal
-		yray = random.randint(2,2+new_grid.height)
+		yray = random.randint(0,new_grid.height-1)
 		if bool(random.getrandbits(1)):
-			xray = 0
+			xray = -1
 			symbol = ">"
 		else:
-			xray = 4 + new_grid.width
+			xray = new_grid.width
 			symbol = "<"
 	return (xray,yray,symbol)
 
