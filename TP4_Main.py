@@ -144,9 +144,9 @@ class window_app():
 		if entryray[0]== -1:
 			layout_elements[entryray[0]+1,entryray[1]+2].setText(entryray[2])
 		elif entryray[0] == grid.width:
-			layout_elements[entryray[0]+3,entryray[1]+2].setText(entryray[2])
+			layout_elements[entryray[0]+4,entryray[1]+2].setText(entryray[2])
 		elif entryray[1] == grid.height:
-			layout_elements[entryray[0]+2,entryray[1]+3].setText(entryray[2])
+			layout_elements[entryray[0]+2,entryray[1]+4].setText(entryray[2])
 		elif entryray[1]== -1:
 			layout_elements[entryray[0]+2,entryray[1]+1].setText(entryray[2])
 		sys.exit(app.exec_())
@@ -190,7 +190,7 @@ def main():
 	print("Entry Ray Generated")
 
 	print("Launching Interface")
-	print(new_grid)
+	print(new_grid.width,new_grid.height)
 	user_answer = window_app(new_grid,entry_ray)
 	
 if __name__ == '__main__':
