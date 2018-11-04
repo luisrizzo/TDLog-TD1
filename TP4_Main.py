@@ -110,7 +110,6 @@ def tick():
 		for x in range(2,2+new_grid.width):
 			for y in range (2,2+new_grid.height):
 				empty_elements[x,y].setPixmap(QPixmap("images/aether.png"))
-		#startGame()
 	elif ticking == 25 :
 		print("answer")
 		newmsg = QMessageBox()
